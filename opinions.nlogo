@@ -1,27 +1,50 @@
+;; promenne, ktere nas budou zajimat pozdeji pri analyze
+;; potom je jeste rozlozeni stupnu vrcholu, ale to neni jedna promenna
 globals
 [
   clustering-coefficient               ;; the clustering coefficient of the network
   average-path-length                  ;; average path length of the network
 ]
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Setup Procedures ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 to setup
   clear-all
-  set-default-shape turtles "circle"
-  make-turtles-circle
+  make-turtles
+  if network-type = "random-graph" [ random-graph ]                  ;; circle               1    pocet hran
+  if network-type = "grid-graph" [ grid-graph ]                      ;; grid                 2    pocet hran
+  if network-type = "complete-graph" [ complete-graph ]              ;; circle
+  if network-type = "spatial-graph" [ spatial-graph ]                ;; random               1    pocet hran
+  if network-type = "small-world-graph" [ small-world-graph ]        ;; circle               1    pocet predratovani  |  velikost shluku
+  if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)    2
   reset-ticks
 end
 
-to setup-grid
-  clear-all
+to make-turtles
   set-default-shape turtles "circle"
-  make-turtles-grid
-  reset-ticks
-end
-
-
-to make-turtles-circle
   create-turtles people [ set color white ]
-  layout-circle (sort turtles) max-pycor / 2
+  ;; TODO: obarvit lidi n moznymi barvami (opinions)
+end
+
+to random-graph
+  layout-circle (sort turtles) max-pycor
+  let i 0
+  while [i < count turtles]
+  [
+    let j i + 1
+    while [j < count turtles]
+    [
+      ask turtle i [ if random 100 < edge-prob [create-link-with turtle j] ]
+      set j j + 1
+    ]
+    set i i + 1
+  ]
+end
+
+to grid-graph
+  make-turtles-grid
 end
 
 to make-turtles-grid
@@ -37,41 +60,15 @@ to make-turtles-grid
     set ycor y
     set x x - xspace
     ifelse n = row
-    [set y y - yspace set x max-pxcor - xspace / 2 set n 1]
-    [set n n + 1]]
-
-end
-
-to random-graph
-  let i 0
-  while [i < count turtles]
-  [
-    let j i + 1
-    while [j < count turtles]
-    [
-      ask turtle i [ if random 100 < edge-prob [create-link-with turtle j] ]
-      set j j + 1
+    [ set y y - yspace
+      set x max-pxcor - xspace / 2
+      set n 1 ]
+    [ set n n + 1 ]
     ]
-    set i i + 1
-  ]
-end
-
-to grid-graph
-  let i 0
-  let j 0
-  while [i < count turtles]
-  [
-    set j i + 1
-    while [j < count turtles]
-    [
-      ask turtle i [ create-link-with turtle j ]
-      set j j + 1
-    ]
-    set i i + 1
-  ]
 end
 
 to complete-graph
+  layout-circle (sort turtles) max-pycor
   let i 0
   let j 0
   while [i < count turtles]
@@ -86,7 +83,15 @@ to complete-graph
   ]
 end
 
-to cluster-graph
+to spatial-graph
+end
+
+to small-world-graph
+  circle-graph
+end
+
+to circle-graph
+  layout-circle (sort turtles) max-pycor
   let n 0
   while [n < count turtles]
   [
@@ -97,13 +102,26 @@ to cluster-graph
   ]
 end
 
-to small-world-graph
-  cluster-graph
+to prefferential-graph
 end
 
-to scale-free-graph
 
+;;;;;;;;;;;;;;;;;;;;;;;
+;;; Opinion forming ;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+; prijimani nazoru 1 - periodicky se ptam sousedu a zmenim nazor - s urcitou pravdepodobnosti (changing-opinion-prob)
+; prijimani nazoru 2 - podivam se na vsechny sousedy a zvolim nazor podle vetsiny - s urcitou pravdepodobnosti (changing-opinion-prob)
+to go
 end
+
+
+
+
+
+
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 468
@@ -119,8 +137,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -27
 27
@@ -133,25 +151,25 @@ ticks
 30.0
 
 SLIDER
-25
-25
-197
-58
+21
+20
+193
+53
 people
 people
 0
 300
-27
+16
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-215
-26
-288
-59
+268
+104
+341
+137
 NIL
 setup\n
 NIL
@@ -164,96 +182,38 @@ NIL
 NIL
 1
 
-BUTTON
-26
-232
-172
-265
-NIL
-complete-graph
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-27
-383
-185
-416
-NIL
-small-world-graph\n
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-28
-159
-162
-192
-NIL
-random-graph
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-26
-275
-154
-308
-NIL
-cluster-graph
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 SLIDER
-28
-118
-200
-151
+22
+158
+194
+191
 edge-prob
 edge-prob
 0
 100
-10
+20
 1
 1
 NIL
 HORIZONTAL
 
+CHOOSER
+21
+104
+206
+149
+network-type
+network-type
+"random-graph" "grid-graph" "complete-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
+1
+
 BUTTON
-304
-27
-409
-60
+24
+436
+87
+469
 NIL
-setup-grid
+go
 NIL
 1
 T
@@ -263,6 +223,46 @@ NIL
 NIL
 NIL
 1
+
+CHOOSER
+19
+329
+232
+374
+changing-opinion-strategy
+changing-opinion-strategy
+"one neighbor" "all neighbors"
+0
+
+SLIDER
+18
+384
+237
+417
+changing-opinion-prob
+changing-opinion-prob
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+221
+21
+393
+54
+opinions
+opinions
+0
+20
+8
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
