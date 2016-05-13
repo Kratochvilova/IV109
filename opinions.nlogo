@@ -70,7 +70,7 @@ to spatial-graph
       if choice != nobody [ create-link-with choice ]
     ]
   ]
-  ; make the network look a little prettier
+  ;; make graph nice
   repeat 10
   [
     layout-spring turtles links 0.3 (world-width / (sqrt people)) 1
@@ -78,11 +78,6 @@ to spatial-graph
 end
 
 to small-world-graph
-  ;; variable to ensure that the network is connected
-  let success? false
-
-  ;; kill the old lattice, reset neighbors, and create new lattice
-  ask links [ die ]
   lattice-graph
 
   ask links [
@@ -153,17 +148,28 @@ end
 ;;; Opinion forming ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-; prijimani nazoru 1 - periodicky se ptam sousedu a zmenim nazor - s urcitou pravdepodobnosti (changing-opinion-prob)
-; prijimani nazoru 2 - podivam se na vsechny sousedy a zvolim nazor podle vetsiny - s urcitou pravdepodobnosti (changing-opinion-prob)
 to go
   if changing-opinion-strategy = "one neighbor" [ opinion-strategy-1 ]
   if changing-opinion-strategy = "all neighbors" [ opinion-strategy-2 ]
+  if count-colors = 1 [ stop ]
   tick
 end
 
+;; asking one neighbor at a time and accepting his color with probability changing-opinion-prob
 to opinion-strategy-1
+  ask turtles
+  [
+    let choice one-of other turtles with [link-neighbor? myself]
+    let choice-color red
+    if choice != nobody
+    [
+      ask choice [ set choice-color color ]
+      if random 100 < changing-opinion-prob [ set color choice-color ]
+    ]
+  ]
 end
 
+;; asking all neighbors and accepting the most numerous color with probability changing-opinion-prob
 to opinion-strategy-2
   let most-numerous-color red
   let color-count 0
@@ -184,6 +190,13 @@ to opinion-strategy-2
   ]
 end
 
+to-report count-colors
+  let n 0
+  foreach colors [
+    if count turtles with [ color = ? ] > 0 [ set n n + 1 ]
+  ]
+  report n
+end
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -254,7 +267,7 @@ average-node-degree
 average-node-degree
 0
 people - 1
-3
+7
 1
 1
 NIL
@@ -268,7 +281,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-0
+3
 
 BUTTON
 24
@@ -295,7 +308,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-1
+0
 
 SLIDER
 18
@@ -306,7 +319,7 @@ changing-opinion-prob
 changing-opinion-prob
 0
 100
-11
+87
 1
 1
 NIL
@@ -321,7 +334,7 @@ opinions
 opinions
 0
 7
-5
+3
 1
 1
 NIL
@@ -336,7 +349,7 @@ rewiring-probability
 rewiring-probability
 0
 100
-12
+2
 1
 1
 NIL
