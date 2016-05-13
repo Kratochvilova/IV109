@@ -15,7 +15,6 @@ to setup
   make-turtles
   if network-type = "random-graph" [ random-graph ]                  ;; circle               1    pocet hran
   if network-type = "grid-graph" [ grid-graph ]                      ;; grid                 2    pocet hran
-  if network-type = "complete-graph" [ complete-graph ]              ;; circle
   if network-type = "spatial-graph" [ spatial-graph ]                ;; random               1    pocet hran
   if network-type = "small-world-graph" [ small-world-graph ]        ;; circle               1    pocet predratovani  |  velikost shluku
   if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)    2
@@ -30,14 +29,14 @@ end
 
 to random-graph
   layout-circle (sort turtles) max-pycor
+  let num-edges people * average-node-degree / 2
   let i 0
-  while [i < count turtles]
+  while [i < num-edges ]
   [
-    let j i + 1
-    while [j < count turtles]
+    ask one-of turtles
     [
-      ask turtle i [ if random 100 < edge-prob [create-link-with turtle j] ]
-      set j j + 1
+      let choice one-of other turtles with [not link-neighbor? myself]
+      if choice != nobody [ create-link-with choice ]
     ]
     set i i + 1
   ]
@@ -67,38 +66,63 @@ to make-turtles-grid
     ]
 end
 
-to complete-graph
-  layout-circle (sort turtles) max-pycor
-  let i 0
-  let j 0
-  while [i < count turtles]
+to spatial-graph
+  ask turtles [ setxy (random-xcor * 0.95) (random-ycor * 0.95) ]
+  let num-edges people * average-node-degree / 2
+  while [count links < num-edges ]
   [
-    set j i + 1
-    while [j < count turtles]
+    ask one-of turtles
     [
-      ask turtle i [ create-link-with turtle j ]
-      set j j + 1
+      let choice (min-one-of (other turtles with [not link-neighbor? myself])
+                   [distance myself])
+      if choice != nobody [ create-link-with choice ]
     ]
-    set i i + 1
+  ]
+  ; make the network look a little prettier
+  repeat 10
+  [
+    layout-spring turtles links 0.3 (world-width / (sqrt people)) 1
   ]
 end
 
-to spatial-graph
-end
-
 to small-world-graph
-  circle-graph
+  ;; variable to ensure that the network is connected
+  let success? false
+
+  ;; kill the old lattice, reset neighbors, and create new lattice
+  ask links [ die ]
+  lattice-graph
+
+  ask links [
+    ;; whether to rewire it or not?
+    if random 100 < rewiring-probability
+    [
+      let node1 end1
+      ;; if node1 is not connected to everybody
+      if [ count link-neighbors ] of end1 < (people - 1)
+      [
+        ;; find a node distinct from node1 and not already a neighbor of node1 and rewire
+        let node2 one-of turtles with [ (self != node1) and (not link-neighbor? node1) ]
+        ask node1 [ create-link-with node2 [ set color cyan ] ]
+        die
+      ]
+    ]
+  ]
 end
 
-to circle-graph
+to lattice-graph
   layout-circle (sort turtles) max-pycor
-  let n 0
-  while [n < count turtles]
+  let i 0
+  let j 1
+  while [i < count turtles]
   [
-    ;; make edges with the next two neighbors
-    ask turtle n [ create-link-with turtle ((n + 1) mod count turtles) ]
-    ask turtle n [ create-link-with turtle ((n + 2) mod count turtles) ]
-    set n n + 1
+    set j 1
+    while [j <= average-node-degree / 2]
+    [
+      ask turtle i [ create-link-with turtle ((i + j) mod count turtles) ]
+      set j j + 1
+    ]
+    set i i + 1
   ]
 end
 
@@ -114,9 +138,6 @@ end
 ; prijimani nazoru 2 - podivam se na vsechny sousedy a zvolim nazor podle vetsiny - s urcitou pravdepodobnosti (changing-opinion-prob)
 to go
 end
-
-
-
 
 
 
@@ -159,7 +180,7 @@ people
 people
 0
 300
-16
+164
 1
 1
 NIL
@@ -185,13 +206,13 @@ NIL
 SLIDER
 22
 158
-194
+235
 191
-edge-prob
-edge-prob
+average-node-degree
+average-node-degree
 0
-100
-20
+people - 1
+6
 1
 1
 NIL
@@ -204,8 +225,8 @@ CHOOSER
 149
 network-type
 network-type
-"random-graph" "grid-graph" "complete-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-1
+"random-graph" "grid-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
+2
 
 BUTTON
 24
@@ -259,6 +280,21 @@ opinions
 0
 20
 8
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+22
+204
+206
+237
+rewiring-probability
+rewiring-probability
+0
+100
+12
 1
 1
 NIL
