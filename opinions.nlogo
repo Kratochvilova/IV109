@@ -4,6 +4,7 @@ globals
 [
   clustering-coefficient               ;; the clustering coefficient of the network
   average-path-length                  ;; average path length of the network
+  colors                               ;; pool of colors
 ]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -27,8 +28,7 @@ to make-turtles
 end
 
 to color-turtles
-  ;; pool of colors
-  let colors [red yellow turquoise blue lime pink brown]
+  set colors [red yellow turquoise blue lime pink brown]
   ;; make for every color at least one representative
   let i 1
   while [i < opinions] [
@@ -156,9 +156,33 @@ end
 ; prijimani nazoru 1 - periodicky se ptam sousedu a zmenim nazor - s urcitou pravdepodobnosti (changing-opinion-prob)
 ; prijimani nazoru 2 - podivam se na vsechny sousedy a zvolim nazor podle vetsiny - s urcitou pravdepodobnosti (changing-opinion-prob)
 to go
+  if changing-opinion-strategy = "one neighbor" [ opinion-strategy-1 ]
+  if changing-opinion-strategy = "all neighbors" [ opinion-strategy-2 ]
+  tick
 end
 
+to opinion-strategy-1
+end
 
+to opinion-strategy-2
+  let most-numerous-color red
+  let color-count 0
+  ask turtles [
+    foreach colors [
+      let j count link-neighbors with [ color = ? ]
+      if j > color-count [
+        set most-numerous-color ?
+        set color-count j
+      ]
+      if j = color-count and random 100 < 50 [
+        set most-numerous-color ?
+        set color-count j
+      ]
+    ]
+    set color-count 0
+    if random 100 < changing-opinion-prob [ set color most-numerous-color ]
+  ]
+end
 
 
 @#$#@#$#@
@@ -183,8 +207,8 @@ GRAPHICS-WINDOW
 27
 -21
 21
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -198,7 +222,7 @@ people
 people
 0
 300
-164
+65
 1
 1
 NIL
@@ -244,7 +268,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-0
+3
 
 BUTTON
 24
@@ -271,7 +295,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-0
+1
 
 SLIDER
 18
@@ -282,7 +306,7 @@ changing-opinion-prob
 changing-opinion-prob
 0
 100
-50
+7
 1
 1
 NIL
@@ -297,7 +321,7 @@ opinions
 opinions
 0
 7
-8
+5
 1
 1
 NIL
