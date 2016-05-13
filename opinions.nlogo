@@ -179,8 +179,8 @@ to opinion-strategy-2
         set color-count j
       ]
     ]
+    if random 100 < changing-opinion-prob and color-count > 0 [ set color most-numerous-color ]
     set color-count 0
-    if random 100 < changing-opinion-prob [ set color most-numerous-color ]
   ]
 end
 
@@ -222,7 +222,7 @@ people
 people
 0
 300
-65
+69
 1
 1
 NIL
@@ -254,7 +254,7 @@ average-node-degree
 average-node-degree
 0
 people - 1
-6
+3
 1
 1
 NIL
@@ -268,7 +268,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-3
+0
 
 BUTTON
 24
@@ -277,7 +277,7 @@ BUTTON
 469
 NIL
 go
-NIL
+T
 1
 T
 OBSERVER
@@ -306,7 +306,7 @@ changing-opinion-prob
 changing-opinion-prob
 0
 100
-7
+11
 1
 1
 NIL
