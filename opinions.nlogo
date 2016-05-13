@@ -14,17 +14,33 @@ to setup
   clear-all
   make-turtles
   if network-type = "random-graph" [ random-graph ]                  ;; circle               1    pocet hran
-  if network-type = "grid-graph" [ grid-graph ]                      ;; grid                 2    pocet hran
   if network-type = "spatial-graph" [ spatial-graph ]                ;; random               1    pocet hran
   if network-type = "small-world-graph" [ small-world-graph ]        ;; circle               1    pocet predratovani  |  velikost shluku
   if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)    2
+  color-turtles
   reset-ticks
 end
 
 to make-turtles
   set-default-shape turtles "circle"
   create-turtles people [ set color white ]
-  ;; TODO: obarvit lidi n moznymi barvami (opinions)
+end
+
+to color-turtles
+  ;; pool of colors
+  let colors [red yellow turquoise blue lime pink brown]
+  ;; make for every color at least one representative
+  let i 1
+  while [i < opinions] [
+    ask one-of turtles with [color = white] [
+      set color item i colors
+    ]
+    set i i + 1
+  ]
+  ;; color rest of the turtles
+  ask turtles with [ color = white ] [
+    set color item random opinions colors
+  ]
 end
 
 to random-graph
@@ -40,30 +56,6 @@ to random-graph
     ]
     set i i + 1
   ]
-end
-
-to grid-graph
-  make-turtles-grid
-end
-
-to make-turtles-grid
-  let row floor sqrt people
-  create-turtles row * row [ set color white ]
-  let xspace (2 * max-pxcor) / row
-  let x max-pxcor - xspace / 2
-  let yspace (2 * max-pycor) / row
-  let y max-pycor - yspace / 2
-  let n 1
-  ask turtles [
-    set xcor x
-    set ycor y
-    set x x - xspace
-    ifelse n = row
-    [ set y y - yspace
-      set x max-pxcor - xspace / 2
-      set n 1 ]
-    [ set n n + 1 ]
-    ]
 end
 
 to spatial-graph
@@ -127,6 +119,33 @@ to lattice-graph
 end
 
 to prefferential-graph
+  clear-all
+  create-turtles 1 [set color white]
+  create-turtles 1 [
+    set color white
+    create-link-with turtle 0
+  ]
+  while [count turtles < people] [
+    let old-node [one-of both-ends] of one-of links
+    create-turtles 1
+    [
+      set color white
+      if old-node != nobody
+      [ create-link-with old-node
+        ;; position the new node near its partner
+        move-to old-node
+        fd 8
+      ]
+    ]
+    ;; make graph nice
+    repeat 3 [
+      let factor sqrt count turtles
+      layout-spring turtles links (1 / factor) (7 / factor) (1 / factor)
+    ]
+    let x-offset max [xcor] of turtles + min [xcor] of turtles
+    let y-offset max [ycor] of turtles + min [ycor] of turtles
+    ask turtles [ setxy (xcor - x-offset / 2) (ycor - y-offset / 2) ]
+  ]
 end
 
 
@@ -138,7 +157,6 @@ end
 ; prijimani nazoru 2 - podivam se na vsechny sousedy a zvolim nazor podle vetsiny - s urcitou pravdepodobnosti (changing-opinion-prob)
 to go
 end
-
 
 
 
@@ -225,8 +243,8 @@ CHOOSER
 149
 network-type
 network-type
-"random-graph" "grid-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-2
+"random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
+0
 
 BUTTON
 24
@@ -278,7 +296,7 @@ SLIDER
 opinions
 opinions
 0
-20
+7
 8
 1
 1
