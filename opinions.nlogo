@@ -235,7 +235,7 @@ people
 people
 0
 300
-69
+13
 1
 1
 NIL
@@ -281,7 +281,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-3
+2
 
 BUTTON
 24
@@ -308,7 +308,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-0
+1
 
 SLIDER
 18
@@ -319,7 +319,7 @@ changing-opinion-prob
 changing-opinion-prob
 0
 100
-87
+48
 1
 1
 NIL
@@ -333,8 +333,8 @@ SLIDER
 opinions
 opinions
 0
-7
-3
+min (list people 7)
+5
 1
 1
 NIL
