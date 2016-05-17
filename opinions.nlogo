@@ -7,6 +7,13 @@ globals
   colors                               ;; pool of colors
 ]
 
+turtles-own
+[
+  opinion
+  stubborn?
+]
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Setup Procedures ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,11 +21,15 @@ globals
 to setup
   clear-all
   make-turtles
-  if network-type = "random-graph" [ random-graph ]                  ;; circle               1    pocet hran
-  if network-type = "spatial-graph" [ spatial-graph ]                ;; random               1    pocet hran
-  if network-type = "small-world-graph" [ small-world-graph ]        ;; circle               1    pocet predratovani  |  velikost shluku
-  if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)    2
-  color-turtles
+  if network-type = "random-graph" [ random-graph ]                  ;; circle                 pocet hran
+  if network-type = "spatial-graph" [ spatial-graph ]                ;; random                 pocet hran
+  if network-type = "small-world-graph" [ small-world-graph ]        ;; circle                 pocet predratovani  |  velikost shluku
+  if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)
+
+  if changing-opinion-strategy = "one neighbor" [ color-turtles ]
+  if changing-opinion-strategy = "all neighbors" [ color-turtles ]
+  if changing-opinion-strategy = "continuous - one neighbor" [ color-turtles-2 ]
+  if changing-opinion-strategy = "continuous - all neighbors" [ color-turtles-2 ]
   reset-ticks
 end
 
@@ -26,6 +37,9 @@ to make-turtles
   set-default-shape turtles "circle"
   create-turtles people [ set color white ]
 end
+
+
+;;; Coloring ;;;
 
 to color-turtles
   set colors [red yellow turquoise blue lime pink brown]
@@ -42,6 +56,32 @@ to color-turtles
     set color item random opinions colors
   ]
 end
+
+to color-turtles-2
+  set colors [red green]
+
+  ask turtles with [ color = white ] [
+    set opinion random-float 1
+    set-color
+    set stubborn? false
+  ]
+  ask n-of 4 turtles
+  [ set stubborn? true
+    set size 2
+    ifelse random 100 < stubborn-balance
+    [ set opinion 0 ]
+    [ set opinion 1 ]
+    set-color]
+end
+
+to set-color
+  ifelse opinion < 0.5
+  [ set color (list 255 (255 * opinion * 2) 0) ]
+  [ set color (list (255 - 255 * (opinion - 0.5) * 2) 255 0) ]
+end
+
+
+;;; Graphs ;;;
 
 to random-graph
   layout-circle (sort turtles) max-pycor
@@ -151,7 +191,7 @@ end
 to go
   if changing-opinion-strategy = "one neighbor" [ opinion-strategy-1 ]
   if changing-opinion-strategy = "all neighbors" [ opinion-strategy-2 ]
-  if count-colors = 1 [ stop ]
+  if changing-opinion-strategy = "continuous - one neighbor" [continuous-opinion-strategy-1]
   tick
 end
 
@@ -190,14 +230,54 @@ to opinion-strategy-2
   ]
 end
 
-to-report count-colors
-  let n 0
-  foreach colors [
-    if count turtles with [ color = ? ] > 0 [ set n n + 1 ]
+;; asking one neighbor at a time and leaning towards his opinion
+;; opinions are from range <0, 1>
+to continuous-opinion-strategy-1
+  ask turtles with [ stubborn? = false ]
+  [
+    let choice one-of other turtles with [link-neighbor? myself]
+    let choice-opinion 0
+    if choice != nobody
+    [
+      ask choice [ set choice-opinion opinion ]
+      let difference choice-opinion - opinion
+      set opinion opinion + (difference * changing-opinion-strength)
+      if opinion > 1 [ set opinion 1 ]
+      if opinion < 0 [ set opinion 0 ]
+      set-color
+    ]
   ]
-  report n
 end
 
+to-report min-opinion
+  let i 1
+  ask turtles [ if opinion < i [set i opinion] ]
+  report i
+end
+
+to-report max-opinion
+  let i 0
+  ask turtles [ if opinion > i [set i opinion] ]
+  report i
+end
+
+to-report avg-opinion
+  let i 0
+  ask turtles [ set i i + opinion ]
+  report i / people
+end
+
+to-report lower-opinion
+  let i 0
+  ask turtles [ if opinion < 0.2 [set i i + 1] ]
+  report i / people
+end
+
+to-report higher-opinion
+  let i 0
+  ask turtles [ if opinion > 0.8 [set i i + 1] ]
+  report i / people
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 468
@@ -235,7 +315,7 @@ people
 people
 0
 300
-13
+225
 1
 1
 NIL
@@ -267,7 +347,7 @@ average-node-degree
 average-node-degree
 0
 people - 1
-7
+5
 1
 1
 NIL
@@ -281,13 +361,13 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-2
+3
 
 BUTTON
-24
-436
-87
-469
+301
+386
+364
+419
 NIL
 go
 T
@@ -301,25 +381,25 @@ NIL
 1
 
 CHOOSER
-19
-329
-232
-374
+23
+330
+263
+375
 changing-opinion-strategy
 changing-opinion-strategy
-"one neighbor" "all neighbors"
-1
+"one neighbor" "all neighbors" "continuous - one neighbor" "continuous - all neighbors"
+2
 
 SLIDER
-18
-384
-237
-417
+24
+386
+243
+419
 changing-opinion-prob
 changing-opinion-prob
 0
 100
-48
+50
 1
 1
 NIL
@@ -334,7 +414,7 @@ opinions
 opinions
 0
 min (list people 7)
-5
+3
 1
 1
 NIL
@@ -349,7 +429,57 @@ rewiring-probability
 rewiring-probability
 0
 100
+11
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+25
+493
+225
+643
+extremes
+Time
+Number
+0.0
+200.0
+0.0
+1.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -2674135 true "" "plot lower-opinion"
+"pen-1" 1.0 0 -13840069 true "" "plot higher-opinion"
+"pen-2" 1.0 0 -1184463 true "" "plot avg-opinion"
+
+SLIDER
+24
+428
+267
+461
+changing-opinion-strength
+changing-opinion-strength
+-1
 2
+0.5
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+254
+506
+439
+539
+stubborn-balance
+stubborn-balance
+0
+100
+50
 1
 1
 NIL
@@ -702,6 +832,43 @@ NetLogo 5.3.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="experiment" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="400"/>
+    <metric>avg-opinion</metric>
+    <enumeratedValueSet variable="changing-opinion-strategy">
+      <value value="&quot;continuous - one neighbor&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strength">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="people">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="network-type">
+      <value value="&quot;spatial-graph&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rewiring-probability">
+      <value value="11"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="average-node-degree">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-prob">
+      <value value="0"/>
+      <value value="20"/>
+      <value value="40"/>
+      <value value="60"/>
+      <value value="80"/>
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="opinions">
+      <value value="3"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
