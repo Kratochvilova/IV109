@@ -21,15 +21,12 @@ turtles-own
 to setup
   clear-all
   make-turtles
-  if network-type = "random-graph" [ random-graph ]                  ;; circle                 pocet hran
-  if network-type = "spatial-graph" [ spatial-graph ]                ;; random                 pocet hran
-  if network-type = "small-world-graph" [ small-world-graph ]        ;; circle                 pocet predratovani  |  velikost shluku
+  if network-type = "random-graph" [ random-graph ]                  ;; circle
+  if network-type = "spatial-graph" [ spatial-graph ]                ;; random
+  if network-type = "small-world-graph" [ small-world-graph ]        ;; circle
   if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)
-
-  if changing-opinion-strategy = "one neighbor" [ color-turtles ]
-  if changing-opinion-strategy = "all neighbors" [ color-turtles ]
-  if changing-opinion-strategy = "continuous - one neighbor" [ color-turtles-2 ]
-  if changing-opinion-strategy = "continuous - all neighbors" [ color-turtles-2 ]
+  color-turtles
+  make-stubborn
   reset-ticks
 end
 
@@ -42,42 +39,34 @@ end
 ;;; Coloring ;;;
 
 to color-turtles
-  set colors [red yellow turquoise blue lime pink brown]
-  ;; make for every color at least one representative
-  let i 1
-  while [i < opinions] [
-    ask one-of turtles with [color = white] [
-      set color item i colors
-    ]
-    set i i + 1
-  ]
-  ;; color rest of the turtles
-  ask turtles with [ color = white ] [
-    set color item random opinions colors
-  ]
-end
-
-to color-turtles-2
-  set colors [red green]
-
   ask turtles with [ color = white ] [
     set opinion random-float 1
     set-color
     set stubborn? false
   ]
-  ask n-of 4 turtles
-  [ set stubborn? true
-    set size 2
-    ifelse random 100 < stubborn-balance
-    [ set opinion 0 ]
-    [ set opinion 1 ]
-    set-color]
 end
 
 to set-color
   ifelse opinion < 0.5
   [ set color (list 255 (255 * opinion * 2) 0) ]
   [ set color (list (255 - 255 * (opinion - 0.5) * 2) 255 0) ]
+end
+
+to make-stubborn
+  ask n-of stubborn-green turtles
+  [
+    set stubborn? true
+    set size 2
+    set opinion 1
+    set-color
+  ]
+  ask n-of stubborn-red turtles with [stubborn? = false]
+  [
+    set stubborn? true
+    set size 2
+    set opinion 0
+    set-color
+  ]
 end
 
 
@@ -191,48 +180,11 @@ end
 to go
   if changing-opinion-strategy = "one neighbor" [ opinion-strategy-1 ]
   if changing-opinion-strategy = "all neighbors" [ opinion-strategy-2 ]
-  if changing-opinion-strategy = "continuous - one neighbor" [continuous-opinion-strategy-1]
   tick
 end
 
-;; asking one neighbor at a time and accepting his color with probability changing-opinion-prob
-to opinion-strategy-1
-  ask turtles
-  [
-    let choice one-of other turtles with [link-neighbor? myself]
-    let choice-color red
-    if choice != nobody
-    [
-      ask choice [ set choice-color color ]
-      if random 100 < changing-opinion-prob [ set color choice-color ]
-    ]
-  ]
-end
-
-;; asking all neighbors and accepting the most numerous color with probability changing-opinion-prob
-to opinion-strategy-2
-  let most-numerous-color red
-  let color-count 0
-  ask turtles [
-    foreach colors [
-      let j count link-neighbors with [ color = ? ]
-      if j > color-count [
-        set most-numerous-color ?
-        set color-count j
-      ]
-      if j = color-count and random 100 < 50 [
-        set most-numerous-color ?
-        set color-count j
-      ]
-    ]
-    if random 100 < changing-opinion-prob and color-count > 0 [ set color most-numerous-color ]
-    set color-count 0
-  ]
-end
-
 ;; asking one neighbor at a time and leaning towards his opinion
-;; opinions are from range <0, 1>
-to continuous-opinion-strategy-1
+to opinion-strategy-1
   ask turtles with [ stubborn? = false ]
   [
     let choice one-of other turtles with [link-neighbor? myself]
@@ -246,6 +198,22 @@ to continuous-opinion-strategy-1
       if opinion < 0 [ set opinion 0 ]
       set-color
     ]
+  ]
+end
+
+;; asking all neighbors and leaning towards average opinion
+to opinion-strategy-2
+  let sum-opinion 0
+  ask turtles with [ stubborn? = false ]
+  [
+    ask link-neighbors [ set sum-opinion sum-opinion + opinion ]
+    let difference 0
+    if count link-neighbors != 0 [ set difference sum-opinion / count link-neighbors - opinion]
+    set opinion opinion + (difference * changing-opinion-strength)
+    if opinion > 1 [ set opinion 1 ]
+    if opinion < 0 [ set opinion 0 ]
+    set-color
+    set sum-opinion 0
   ]
 end
 
@@ -267,17 +235,6 @@ to-report avg-opinion
   report i / people
 end
 
-to-report lower-opinion
-  let i 0
-  ask turtles [ if opinion < 0.2 [set i i + 1] ]
-  report i / people
-end
-
-to-report higher-opinion
-  let i 0
-  ask turtles [ if opinion > 0.8 [set i i + 1] ]
-  report i / people
-end
 @#$#@#$#@
 GRAPHICS-WINDOW
 468
@@ -315,17 +272,17 @@ people
 people
 0
 300
-225
+195
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-268
-104
-341
-137
+309
+199
+382
+232
 NIL
 setup\n
 NIL
@@ -339,35 +296,35 @@ NIL
 1
 
 SLIDER
-22
-158
-235
-191
+21
+208
+234
+241
 average-node-degree
 average-node-degree
 0
 people - 1
-5
+6
 1
 1
 NIL
 HORIZONTAL
 
 CHOOSER
-21
-104
-206
-149
+20
+160
+205
+205
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
 3
 
 BUTTON
-301
-386
-364
-419
+313
+349
+376
+382
 NIL
 go
 T
@@ -381,50 +338,20 @@ NIL
 1
 
 CHOOSER
-23
-330
-263
-375
+20
+328
+260
+373
 changing-opinion-strategy
 changing-opinion-strategy
-"one neighbor" "all neighbors" "continuous - one neighbor" "continuous - all neighbors"
-2
-
-SLIDER
-24
-386
-243
-419
-changing-opinion-prob
-changing-opinion-prob
+"one neighbor" "all neighbors"
 0
-100
-50
-1
-1
-NIL
-HORIZONTAL
 
 SLIDER
-221
 21
-393
-54
-opinions
-opinions
-0
-min (list people 7)
-3
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-22
-204
-206
-237
+245
+205
+278
 rewiring-probability
 rewiring-probability
 0
@@ -451,15 +378,15 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -2674135 true "" "plot lower-opinion"
-"pen-1" 1.0 0 -13840069 true "" "plot higher-opinion"
+"default" 1.0 0 -2674135 true "" "plot min-opinion"
+"pen-1" 1.0 0 -13840069 true "" "plot max-opinion"
 "pen-2" 1.0 0 -1184463 true "" "plot avg-opinion"
 
 SLIDER
-24
-428
-267
-461
+22
+377
+265
+410
 changing-opinion-strength
 changing-opinion-strength
 -1
@@ -471,15 +398,30 @@ NIL
 HORIZONTAL
 
 SLIDER
-254
-506
-439
-539
-stubborn-balance
-stubborn-balance
+229
+22
+414
+55
+stubborn-green
+stubborn-green
 0
-100
-50
+people
+0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+229
+65
+401
+98
+stubborn-red
+stubborn-red
+0
+people - stubborn-green
+0
 1
 1
 NIL
