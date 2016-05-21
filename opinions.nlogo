@@ -40,13 +40,43 @@ end
 
 to color-turtles
   ask turtles with [ color = white ] [
-    set opinion random-float 1
+
+    ;; uniform distribution
+    if opinion-distribution = "uniform" [ set opinion random-float 1 ]
+
+    ;; normal distribution
+    if opinion-distribution = "middle" [
+      set opinion random-normal 0.5 0.2
+      ]
+
+    ;; inversed normal distribution
+    if opinion-distribution = "extremes" [
+      set opinion random-normal 0.5 0.2
+      ifelse opinion > 0.5 [set opinion opinion - 0.5 ] [set opinion 1 - opinion]
+      ]
+
+    ;; lower half of the opinions is uniform, upper half of the opinions is uniform, but only from range <0.5, 0.7>
+    if opinion-distribution = "uniform-middle" [
+      ifelse random 2 = 0
+      [ set opinion random-float 0.5 ]
+      [ set opinion 0.5 + random-float 0.2 ]
+      ]
+
+    ;; lower half of the opinions is uniform, upper half of the opinions is uniform, but only from range <0.8, 1>
+    if opinion-distribution = "uniform-extreme" [
+      ifelse random 2 = 0
+      [ set opinion random-float 0.5 ]
+      [ set opinion 0.8 + random-float 0.2 ]
+      ]
+
     set-color
     set stubborn? false
   ]
 end
 
 to set-color
+  if opinion > 1 [ set opinion 1 ]
+  if opinion < 0 [ set opinion 0 ]
   ifelse opinion < 0.5
   [ set color (list 255 (255 * opinion * 2) 0) ]
   [ set color (list (255 - 255 * (opinion - 0.5) * 2) 255 0) ]
@@ -194,8 +224,6 @@ to opinion-strategy-1
       ask choice [ set choice-opinion opinion ]
       let difference choice-opinion - opinion
       set opinion opinion + (difference * changing-opinion-strength)
-      if opinion > 1 [ set opinion 1 ]
-      if opinion < 0 [ set opinion 0 ]
       set-color
     ]
   ]
@@ -210,8 +238,6 @@ to opinion-strategy-2
     let difference 0
     if count link-neighbors != 0 [ set difference sum-opinion / count link-neighbors - opinion]
     set opinion opinion + (difference * changing-opinion-strength)
-    if opinion > 1 [ set opinion 1 ]
-    if opinion < 0 [ set opinion 0 ]
     set-color
     set sum-opinion 0
   ]
@@ -234,7 +260,6 @@ to-report avg-opinion
   ask turtles [ set i i + opinion ]
   report i / people
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 468
@@ -414,9 +439,9 @@ HORIZONTAL
 
 SLIDER
 229
-65
+61
 401
-98
+94
 stubborn-red
 stubborn-red
 0
@@ -426,6 +451,38 @@ people - stubborn-green
 1
 NIL
 HORIZONTAL
+
+CHOOSER
+22
+60
+188
+105
+opinion-distribution
+opinion-distribution
+"uniform" "middle" "extremes" "uniform-middle" "uniform-extreme"
+4
+
+PLOT
+252
+494
+452
+644
+distribution
+Time
+Number
+0.0
+200.0
+0.0
+200.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -2674135 true "" "plot count turtles with [opinion < 0.2]"
+"pen-1" 1.0 0 -955883 true "" "plot count turtles with [opinion >= 0.2 and opinion < 0.4]"
+"pen-2" 1.0 0 -1184463 true "" "plot count turtles with [opinion >= 0.4 and opinion < 0.6]"
+"pen-3" 1.0 0 -10899396 true "" "plot count turtles with [opinion >= 0.6 and opinion < 0.8]"
+"pen-4" 1.0 0 -13840069 true "" "plot count turtles with [opinion >= 0.8]"
 
 @#$#@#$#@
 ## WHAT IS IT?
