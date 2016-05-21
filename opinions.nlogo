@@ -52,7 +52,9 @@ to color-turtles
     ;; inversed normal distribution
     if opinion-distribution = "extremes" [
       set opinion random-normal 0.5 0.2
-      ifelse opinion > 0.5 [set opinion opinion - 0.5 ] [set opinion 1 - opinion]
+      ifelse opinion = 0.5
+      [ set opinion random 2 ]
+      [ ifelse opinion < 0.5 [ set opinion opinion + 0.5 ] [ set opinion opinion - 0.5 ] ]
       ]
 
     ;; lower half of the opinions is uniform, upper half of the opinions is uniform, but only from range <0.5, 0.7>
@@ -460,7 +462,7 @@ CHOOSER
 opinion-distribution
 opinion-distribution
 "uniform" "middle" "extremes" "uniform-middle" "uniform-extreme"
-4
+2
 
 PLOT
 252
