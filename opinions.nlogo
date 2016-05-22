@@ -5,6 +5,7 @@ globals
   clustering-coefficient               ;; the clustering coefficient of the network
   average-path-length                  ;; average path length of the network
   colors                               ;; pool of colors
+  sum-change                           ;; sum of changed opinions
 ]
 
 turtles-own
@@ -210,6 +211,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 to go
+  set sum-change 0
   if changing-opinion-strategy = "one neighbor" [ opinion-strategy-1 ]
   if changing-opinion-strategy = "all neighbors" [ opinion-strategy-2 ]
   tick
@@ -227,6 +229,7 @@ to opinion-strategy-1
       let difference choice-opinion - opinion
       set opinion opinion + (difference * changing-opinion-strength)
       set-color
+      set sum-change (sum-change + abs (difference * changing-opinion-strength))
     ]
   ]
 end
@@ -242,6 +245,7 @@ to opinion-strategy-2
     set opinion opinion + (difference * changing-opinion-strength)
     set-color
     set sum-opinion 0
+    set sum-change (sum-change + abs (difference * changing-opinion-strength))
   ]
 end
 
@@ -345,13 +349,13 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-3
+1
 
 BUTTON
-313
-349
-376
-382
+312
+323
+375
+356
 NIL
 go
 T
@@ -365,10 +369,10 @@ NIL
 1
 
 CHOOSER
-20
-328
-260
-373
+19
+302
+259
+347
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
@@ -383,17 +387,17 @@ rewiring-probability
 rewiring-probability
 0
 100
-11
+4
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-25
-493
-225
-643
+18
+392
+218
+542
 extremes
 Time
 Number
@@ -410,15 +414,15 @@ PENS
 "pen-2" 1.0 0 -1184463 true "" "plot avg-opinion"
 
 SLIDER
-22
-377
-265
-410
+21
+351
+264
+384
 changing-opinion-strength
 changing-opinion-strength
 -1
 2
-0.5
+1.1
 0.1
 1
 NIL
@@ -465,10 +469,10 @@ opinion-distribution
 2
 
 PLOT
-252
-494
-452
-644
+245
+393
+445
+543
 distribution
 Time
 Number
@@ -478,13 +482,31 @@ Number
 200.0
 true
 false
-"" ""
+"set-plot-y-range 0 people" ""
 PENS
 "default" 1.0 0 -2674135 true "" "plot count turtles with [opinion < 0.2]"
 "pen-1" 1.0 0 -955883 true "" "plot count turtles with [opinion >= 0.2 and opinion < 0.4]"
 "pen-2" 1.0 0 -1184463 true "" "plot count turtles with [opinion >= 0.4 and opinion < 0.6]"
 "pen-3" 1.0 0 -10899396 true "" "plot count turtles with [opinion >= 0.6 and opinion < 0.8]"
 "pen-4" 1.0 0 -13840069 true "" "plot count turtles with [opinion >= 0.8]"
+
+PLOT
+122
+582
+322
+732
+changes
+Time
+Change
+0.0
+200.0
+0.0
+200.0
+true
+false
+"set-plot-y-range 0 people" ""
+PENS
+"default" 1.0 0 -2674135 true "" "plot sum-change"
 
 @#$#@#$#@
 ## WHAT IS IT?
