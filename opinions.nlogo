@@ -262,10 +262,10 @@ to-report zero-pad [n places]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-468
-12
-1251
-647
+470
+10
+1253
+645
 27
 21
 14.061
@@ -297,17 +297,17 @@ people
 people
 0
 300
-203
+200
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-312
-233
-385
-266
+315
+197
+388
+230
 NIL
 setup\n
 NIL
@@ -321,35 +321,35 @@ NIL
 1
 
 SLIDER
-21
-208
-234
-241
+247
+71
+460
+104
 average-node-degree
 average-node-degree
 0
 people - 1
-7
+14
 1
 1
 NIL
 HORIZONTAL
 
 CHOOSER
+247
 20
-160
-205
-205
+432
+65
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-3
+2
 
 BUTTON
-312
-323
-375
-356
+316
+247
+386
+280
 NIL
 go
 T
@@ -363,35 +363,35 @@ NIL
 1
 
 CHOOSER
-19
-302
-259
-347
+17
+197
+257
+242
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
 0
 
 SLIDER
-21
-245
-205
-278
+247
+113
+431
+146
 rewiring-probability
 rewiring-probability
 0
 100
-4
+0
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-18
-392
-218
-542
+22
+452
+222
+602
 extremes
 Time
 Number
@@ -400,23 +400,23 @@ Number
 0.0
 1.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -2674135 true "" "plot min-opinion"
-"pen-1" 1.0 0 -13840069 true "" "plot max-opinion"
-"pen-2" 1.0 0 -1184463 true "" "plot avg-opinion"
+"Min" 1.0 0 -2674135 true "" "plot min-opinion"
+"Max" 1.0 0 -13840069 true "" "plot max-opinion"
+"Avg" 1.0 0 -1184463 true "" "plot avg-opinion"
 
 SLIDER
-21
-351
-264
-384
+17
+253
+260
+286
 changing-opinion-strength
 changing-opinion-strength
 0
 1
-0.3
+1
 0.1
 1
 NIL
@@ -424,20 +424,20 @@ HORIZONTAL
 
 CHOOSER
 22
-60
+102
 188
-105
+147
 opinion-distribution
 opinion-distribution
-"uniform" "middle"
+"uniform" "middle" "extremes"
 0
 
 PLOT
-245
-393
-445
-543
-distribution
+21
+296
+221
+446
+distribution-dynamics
 Time
 Number
 0.0
@@ -445,20 +445,20 @@ Number
 0.0
 200.0
 true
-false
+true
 "set-plot-y-range 0 people" ""
 PENS
-"default" 1.0 0 -2674135 true "" "plot count turtles with [opinion < 0.2]"
-"pen-1" 1.0 0 -955883 true "" "plot count turtles with [opinion >= 0.2 and opinion < 0.4]"
-"pen-2" 1.0 0 -1184463 true "" "plot count turtles with [opinion >= 0.4 and opinion < 0.6]"
-"pen-3" 1.0 0 -10899396 true "" "plot count turtles with [opinion >= 0.6 and opinion < 0.8]"
-"pen-4" 1.0 0 -13840069 true "" "plot count turtles with [opinion >= 0.8]"
+"<0; 0.2)" 1.0 0 -2674135 true "" "plot count turtles with [opinion < 0.2]"
+"<0.2; 0.4)" 1.0 0 -955883 true "" "plot count turtles with [opinion >= 0.2 and opinion < 0.4]"
+"<0.4; 0.6)" 1.0 0 -1184463 true "" "plot count turtles with [opinion >= 0.4 and opinion < 0.6]"
+"<0.6; 0.8)" 1.0 0 -6565750 true "" "plot count turtles with [opinion >= 0.6 and opinion < 0.8]"
+"<0.8; 1>" 1.0 0 -13840069 true "" "plot count turtles with [opinion >= 0.8]"
 
 PLOT
-18
-553
-218
-703
+246
+451
+446
+601
 changes
 Time
 Change
@@ -473,10 +473,10 @@ PENS
 "default" 1.0 0 -2674135 true "" "plot sum-change"
 
 MONITOR
-269
-596
-424
-641
+272
+607
+427
+652
 changes
 zero-pad sum-change 8
 17
@@ -484,10 +484,10 @@ zero-pad sum-change 8
 11
 
 SLIDER
-261
 20
-433
-53
+60
+192
+93
 stubborn-prob
 stubborn-prob
 0
@@ -499,11 +499,11 @@ NIL
 HORIZONTAL
 
 PLOT
-248
-69
-448
-219
-plot 1
+246
+296
+446
+446
+distribution-current
 NIL
 NIL
 0.0
