@@ -221,6 +221,8 @@ end
 to opinion-strategy-1
   ask turtles with [ stubborn? = false ]
   [
+    let starting-opinion opinion
+
     let choice one-of other turtles with [link-neighbor? myself]
     let choice-opinion 0
     if choice != nobody
@@ -231,6 +233,8 @@ to opinion-strategy-1
       set-color
       set sum-change (sum-change + abs (difference * changing-opinion-strength))
     ]
+
+    set sum-change sum-change + abs (starting-opinion - opinion)
   ]
 end
 
@@ -239,13 +243,16 @@ to opinion-strategy-2
   let sum-opinion 0
   ask turtles with [ stubborn? = false ]
   [
+    let starting-opinion opinion
+
     ask link-neighbors [ set sum-opinion sum-opinion + opinion ]
     let difference 0
     if count link-neighbors != 0 [ set difference sum-opinion / count link-neighbors - opinion]
     set opinion opinion + (difference * changing-opinion-strength)
     set-color
     set sum-opinion 0
-    set sum-change (sum-change + abs (difference * changing-opinion-strength))
+
+    set sum-change sum-change + abs (starting-opinion - opinion)
   ]
 end
 
@@ -265,6 +272,16 @@ to-report avg-opinion
   let i 0
   ask turtles [ set i i + opinion ]
   report i / people
+end
+
+to-report zero-pad [n places]
+  let result (word precision n places)
+  if not is-number? position "." result [
+    set result (word result ".")
+  ]
+  let padding-amount position "." result - length result + places + 1
+  let padding reduce word fput "" n-values padding-amount [0]
+  report (word result padding)
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -349,7 +366,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-1
+3
 
 BUTTON
 312
@@ -376,7 +393,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-0
+1
 
 SLIDER
 21
@@ -420,9 +437,9 @@ SLIDER
 384
 changing-opinion-strength
 changing-opinion-strength
--1
-2
-1.1
+0
+1
+1
 0.1
 1
 NIL
@@ -466,7 +483,7 @@ CHOOSER
 opinion-distribution
 opinion-distribution
 "uniform" "middle" "extremes" "uniform-middle" "uniform-extreme"
-2
+1
 
 PLOT
 245
@@ -491,22 +508,33 @@ PENS
 "pen-4" 1.0 0 -13840069 true "" "plot count turtles with [opinion >= 0.8]"
 
 PLOT
-122
-582
-322
-732
+18
+553
+218
+703
 changes
 Time
 Change
 0.0
 200.0
 0.0
-200.0
+1.0
 true
 false
-"set-plot-y-range 0 people" ""
+"" ""
 PENS
 "default" 1.0 0 -2674135 true "" "plot sum-change"
+
+MONITOR
+269
+596
+424
+641
+changes
+zero-pad sum-change 8
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
