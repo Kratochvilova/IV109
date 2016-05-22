@@ -48,7 +48,7 @@ to color-turtles
     ;; normal distribution
     if opinion-distribution = "middle" [
       set opinion random-normal 0.5 0.2
-      ]
+    ]
 
     ;; inversed normal distribution
     if opinion-distribution = "extremes" [
@@ -56,21 +56,7 @@ to color-turtles
       ifelse opinion = 0.5
       [ set opinion random 2 ]
       [ ifelse opinion < 0.5 [ set opinion opinion + 0.5 ] [ set opinion opinion - 0.5 ] ]
-      ]
-
-    ;; lower half of the opinions is uniform, upper half of the opinions is uniform, but only from range <0.5, 0.7>
-    if opinion-distribution = "uniform-middle" [
-      ifelse random 2 = 0
-      [ set opinion random-float 0.5 ]
-      [ set opinion 0.5 + random-float 0.2 ]
-      ]
-
-    ;; lower half of the opinions is uniform, upper half of the opinions is uniform, but only from range <0.8, 1>
-    if opinion-distribution = "uniform-extreme" [
-      ifelse random 2 = 0
-      [ set opinion random-float 0.5 ]
-      [ set opinion 0.8 + random-float 0.2 ]
-      ]
+    ]
 
     set-color
     set stubborn? false
@@ -86,19 +72,11 @@ to set-color
 end
 
 to make-stubborn
-  ask n-of stubborn-green turtles
-  [
-    set stubborn? true
-    set size 2
-    set opinion 1
-    set-color
-  ]
-  ask n-of stubborn-red turtles with [stubborn? = false]
-  [
-    set stubborn? true
-    set size 2
-    set opinion 0
-    set-color
+  ask turtles [
+    if random 100 < stubborn-prob [
+      set stubborn? true
+      set size 2
+    ]
   ]
 end
 
@@ -231,7 +209,6 @@ to opinion-strategy-1
       let difference choice-opinion - opinion
       set opinion opinion + (difference * changing-opinion-strength)
       set-color
-      set sum-change (sum-change + abs (difference * changing-opinion-strength))
     ]
 
     set sum-change sum-change + abs (starting-opinion - opinion)
@@ -320,17 +297,17 @@ people
 people
 0
 300
-195
+203
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-309
-199
-382
-232
+312
+233
+385
+266
 NIL
 setup\n
 NIL
@@ -352,7 +329,7 @@ average-node-degree
 average-node-degree
 0
 people - 1
-6
+7
 1
 1
 NIL
@@ -393,7 +370,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-1
+0
 
 SLIDER
 21
@@ -439,38 +416,8 @@ changing-opinion-strength
 changing-opinion-strength
 0
 1
-1
+0.3
 0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-229
-22
-414
-55
-stubborn-green
-stubborn-green
-0
-people
-0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-229
-61
-401
-94
-stubborn-red
-stubborn-red
-0
-people - stubborn-green
-0
-1
 1
 NIL
 HORIZONTAL
@@ -482,8 +429,8 @@ CHOOSER
 105
 opinion-distribution
 opinion-distribution
-"uniform" "middle" "extremes" "uniform-middle" "uniform-extreme"
-1
+"uniform" "middle"
+0
 
 PLOT
 245
@@ -535,6 +482,39 @@ zero-pad sum-change 8
 17
 1
 11
+
+SLIDER
+261
+20
+433
+53
+stubborn-prob
+stubborn-prob
+0
+100
+0
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+248
+69
+448
+219
+plot 1
+NIL
+NIL
+0.0
+1.0
+0.0
+10.0
+true
+false
+"set-plot-pen-mode 1\nset-plot-y-range 0 count turtles\nset-histogram-num-bars 7" ""
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [opinion] of turtles"
 
 @#$#@#$#@
 ## WHAT IS IT?
