@@ -203,7 +203,7 @@ to opinion-strategy-1
 
     let choice one-of other turtles with [link-neighbor? myself]
     let choice-opinion 0
-    if choice != nobody
+    if choice != nobody and random 100 < changing-opinion-prob
     [
       ask choice [ set choice-opinion opinion ]
       let difference choice-opinion - opinion
@@ -221,14 +221,14 @@ to opinion-strategy-2
   ask turtles with [ stubborn? = false ]
   [
     let starting-opinion opinion
-
-    ask link-neighbors [ set sum-opinion sum-opinion + opinion ]
-    let difference 0
-    if count link-neighbors != 0 [ set difference sum-opinion / count link-neighbors - opinion]
-    set opinion opinion + (difference * changing-opinion-strength)
-    set-color
-    set sum-opinion 0
-
+    if random 100 < changing-opinion-prob [
+      ask link-neighbors [ set sum-opinion sum-opinion + opinion ]
+      let difference 0
+      if count link-neighbors != 0 [ set difference sum-opinion / count link-neighbors - opinion]
+      set opinion opinion + (difference * changing-opinion-strength)
+      set-color
+      set sum-opinion 0
+    ]
     set sum-change sum-change + abs (starting-opinion - opinion)
   ]
 end
@@ -290,24 +290,24 @@ ticks
 
 SLIDER
 21
-20
+12
 193
-53
+45
 people
 people
 0
 300
-200
+168
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-315
-197
-388
-230
+252
+174
+325
+207
 NIL
 setup\n
 NIL
@@ -322,14 +322,14 @@ NIL
 
 SLIDER
 247
-71
+61
 460
-104
+94
 average-node-degree
 average-node-degree
 0
 people - 1
-14
+7
 1
 1
 NIL
@@ -337,19 +337,19 @@ HORIZONTAL
 
 CHOOSER
 247
-20
+10
 432
-65
+55
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
 2
 
 BUTTON
-316
-247
-386
-280
+349
+174
+419
+207
 NIL
 go
 T
@@ -363,10 +363,10 @@ NIL
 1
 
 CHOOSER
-17
-197
-257
-242
+22
+124
+192
+169
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
@@ -374,14 +374,14 @@ changing-opinion-strategy
 
 SLIDER
 247
-113
+103
 431
-146
+136
 rewiring-probability
 rewiring-probability
 0
 100
-0
+13
 1
 1
 NIL
@@ -408,29 +408,29 @@ PENS
 "Avg" 1.0 0 -1184463 true "" "plot avg-opinion"
 
 SLIDER
-17
-253
-260
-286
+21
+172
+193
+205
 changing-opinion-strength
 changing-opinion-strength
 0
 1
-1
+0.9
 0.1
 1
 NIL
 HORIZONTAL
 
 CHOOSER
-22
-102
-188
-147
+23
+74
+189
+119
 opinion-distribution
 opinion-distribution
 "uniform" "middle" "extremes"
-0
+2
 
 PLOT
 21
@@ -484,10 +484,10 @@ zero-pad sum-change 8
 11
 
 SLIDER
-20
-60
-192
-93
+246
+255
+446
+288
 stubborn-prob
 stubborn-prob
 0
@@ -515,6 +515,21 @@ false
 "set-plot-pen-mode 1\nset-plot-y-range 0 count turtles\nset-histogram-num-bars 7" ""
 PENS
 "default" 1.0 1 -16777216 true "" "histogram [opinion] of turtles"
+
+SLIDER
+21
+254
+223
+287
+changing-opinion-prob
+changing-opinion-prob
+0
+100
+100
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -897,6 +912,73 @@ NetLogo 5.3.1
     </enumeratedValueSet>
     <enumeratedValueSet variable="opinions">
       <value value="3"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="experiment" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count turtles</metric>
+    <enumeratedValueSet variable="rewiring-probability">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strategy">
+      <value value="&quot;one neighbor&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="opinion-distribution">
+      <value value="&quot;uniform&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="network-type">
+      <value value="&quot;random-graph&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="average-node-degree">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="people">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strength">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="stubborn-prob">
+      <value value="0"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="random-graph_node-degree_opinion-ditrib" repetitions="10" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <exitCondition>ticks &gt; 199</exitCondition>
+    <metric>sum-change</metric>
+    <metric>count turtles with [opinion &lt; 0.2]</metric>
+    <metric>count turtles with [opinion &gt;= 0.2 and opinion &lt; 0.4]</metric>
+    <metric>count turtles with [opinion &gt;= 0.2 and opinion &lt; 0.4]</metric>
+    <metric>count turtles with [opinion &gt;= 0.2 and opinion &lt; 0.4]</metric>
+    <metric>count turtles with [opinion &gt;= 0.8]</metric>
+    <metric>max-opinion</metric>
+    <metric>avg-opinion</metric>
+    <metric>min-opinion</metric>
+    <enumeratedValueSet variable="rewiring-probability">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strategy">
+      <value value="&quot;one neighbor&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="opinion-distribution">
+      <value value="&quot;uniform&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="network-type">
+      <value value="&quot;random-graph&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="average-node-degree">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="people">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strength">
+      <value value="0.2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="stubborn-prob">
+      <value value="0"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
