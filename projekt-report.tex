@@ -16,9 +16,9 @@
 \chapter{Návrh modelu}
 % přesná formulace modelovaného problému, případná relevantní data
 \section{Formulace problému}
-Naším cílem je zachytit proces formování názorů, který probíhá při interakcích lidí v sociální síti. Vycházíme z myšlenky, že názory člověka jsou do značné míry ovlivněny názory v jeho okolí. Uvažujeme přitom spojitý názor -- člověk nemusí pouze zcela přijmout nebo zamítnout názor svého okolí, ale může jen lehce poupravit svůj vlastní názor tak, aby si více přiblížil názoru okolí. 
+Naším cílem je zachytit proces formování názorů, který probíhá při interakcích lidí v sociální síti. Vycházíme z myšlenky, že názory člověka jsou do značné míry ovlivněny názory v jeho okolí. Uvažujeme přitom spojitý názor -- člověk nemusí pouze zcela přijmout nebo zamítnout názor svého okolí, ale může jen lehce poupravit svůj vlastní názor tak, aby se více přiblížil názoru okolí. 
 
-Formování názorů zkoumáme na několika různých typech sítí a s různým počátečním rozložení názorů. 
+Formování názorů zkoumáme na několika různých typech sítí a s různým počátečním rozložením názorů. 
 
 % popis zvoleného přístupu k modelování a základních prvků modelu, vztahů a zpětných vazeb, vysvětlení základních rovnic/pravidel
 \section{Model}
@@ -31,9 +31,9 @@ Všechny grafy jsou parametrizovány počtem vrcholů (parametr \texttt{people})
 
 \begin{itemize}
 	\item Náhodný graf vzniká náhodným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů.
-	\item Spatial graf je převzatý z již existujícího modelu \textit{Virus on a Network}. Je vytvořen náhodným rozmístěním agentů do prostoru a následným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů. Hrany jsou přidávány mezi náhodným agentem a jemu nejbližším agentem, se kterým ještě není spojen.
+	\item Prostorový graf (spatial graph) je převzatý z již existujícího modelu \textit{Virus on a Network}. Je vytvořen náhodným rozmístěním agentů do prostoru a následným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů. Hrany jsou přidávány mezi náhodným agentem a jemu nejbližším agentem, se kterým ještě není spojen.
 	\item Malý svět je založený na existujícím modelu \textit{Small World}. Nejprve je vytvořen cyklus všech agentů, a poté jsou přidány hrany mezi agenty vzájemně vzdálenými méně než nějaké n tak, aby se stupeň vrcholu co nejvíce přiblížil zvolenému průměrnému stupni. Následně některé hrany zamění jeden svůj konec za náhodný jiný. Počet takových hran je dán nepřímo parametrem \texttt{rewiring-prob}.
-	\item Preferenční graf je založený na existujícím modelu \textit{Prefferential Attachment}. Vzniká postupným přidáváním vrcholů, přičemž nový vrchol se spojí s nějakým již existujícím. Upřednostňovány jsou vrcholy, které mají více hran -- toho je dosaženo náhodným výběrem z konců hran raději než výběrem z vrcholů.
+	\item Preferenční graf je založený na existujícím modelu \textit{Prefferential Attachment}. Vzniká postupným přidáváním vrcholů, přičemž nový vrchol se spojí s nějakým již existujícím. Upřednostňovány jsou vrcholy, které mají více hran -- toho je dosaženo náhodným výběrem z konců hran raději než výběrem z vrcholů. V preferenčním grafu se parametr \texttt{average-node-degree} nebere v úvahu.
 \end{itemize}
 
 Výběr typu grafu lze provést pomocí parametru \texttt{network-type}.
