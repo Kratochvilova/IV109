@@ -7,12 +7,60 @@
 \usepackage{amssymb}
 \author{Pavla Kratochvílová, Adriana Šmijáková}
 \title{IV109 - Formace názorů}
+
 \begin{document}
 \maketitle
+% stručné uvedení do tématu, objasnění základních pojmů
 \chapter{Úvod}
+
 \chapter{Návrh modelu}
-\section{Myšlenka}
-\section{Parametre}
+% přesná formulace modelovaného problému, případná relevantní data
+\section{Formulace problému}
+Naším cílem je zachytit proces formování názorů, který probíhá při interakcích lidí v sociální síti. Vycházíme z myšlenky, že názory člověka jsou do značné míry ovlivněny názory v jeho okolí. Uvažujeme přitom spojitý názor -- člověk nemusí pouze zcela přijmout nebo zamítnout názor svého okolí, ale může jen lehce poupravit svůj vlastní názor tak, aby si více přiblížil názoru okolí. 
+
+Formování názorů zkoumáme na několika různých typech sítí a s různým počátečním rozložení názorů. 
+
+% popis zvoleného přístupu k modelování a základních prvků modelu, vztahů a zpětných vazeb, vysvětlení základních rovnic/pravidel
+\section{Model}
+Formování názorů modelujeme pomocí agentů, kdy každý agent má přidělen názor vyjádřený reálným číslem z intervalu $\langle 0, 1 \rangle$. Agenti jsou vzájemně propojeni v rámci určitého grafu a interagují spolu pouze agenti spojení vazbou.
+
+Model se skládá ze dvou částí: nejprve se vytvoří síť agentů a každému se nastaví názor, a poté probíhá samotný proces formování názorů.
+
+\subsection{Tvorba grafu}
+Všechny grafy jsou parametrizovány počtem vrcholů (parametr \texttt{people}) a průměrným stupněm vrcholů (parametr \texttt{average-node-degree}). Uvažovali jsme čtyři různé typy grafů:
+
+\begin{itemize}
+	\item Náhodný graf vzniká náhodným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů.
+	\item Spatial graf je převzatý z již existujícího modelu \textit{Virus on a Network}. Je vytvořen náhodným rozmístěním agentů do prostoru a následným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů. Hrany jsou přidávány mezi náhodným agentem a jemu nejbližším agentem, se kterým ještě není spojen.
+	\item Malý svět je založený na existujícím modelu \textit{Small World}. Nejprve je vytvořen cyklus všech agentů, a poté jsou přidány hrany mezi agenty vzájemně vzdálenými méně než nějaké n tak, aby se stupeň vrcholu co nejvíce přiblížil zvolenému průměrnému stupni. Následně některé hrany zamění jeden svůj konec za náhodný jiný. Počet takových hran je dán nepřímo parametrem \texttt{rewiring-prob}.
+	\item Preferenční graf je založený na existujícím modelu \textit{Prefferential Attachment}. Vzniká postupným přidáváním vrcholů, přičemž nový vrchol se spojí s nějakým již existujícím. Upřednostňovány jsou vrcholy, které mají více hran -- toho je dosaženo náhodným výběrem z konců hran raději než výběrem z vrcholů.
+\end{itemize}
+
+Výběr typu grafu lze provést pomocí parametru \texttt{network-type}.
+
+\subsection{Počáteční rozložení názorů}
+Agentům jsou přiřazeny názory v intervalu $\langle 0, 1 \rangle$. Uvažovali jsme tři možná počáteční rozložení názorů:
+
+\begin{itemize}
+	\item Uniformní rozložení.
+	\item Normální rozložení -- s průměrem $0.5$ a standardní odchylkou $0.2$.
+	\item Normální rozložení se středem v extrémech -- stejné jako normální rozložení v předchozím bodě, ale posunuté tak, aby nejvíce názorů bylo extrémních (tj. těsně nad $0$ a těsně pod $1$) a nejméně středových (tj. okolo $0.5$).
+\end{itemize}
+
+Počáteční rozložení názorů lze změnit pomocí parametru \texttt{opinion-distribution}. 
+
+\subsection{Změny názorů}
+Uvažujeme dvě strategie pro změnu názorů:
+
+\begin{itemize}
+	\item Jeden soused -- agent se podívá na jednoho náhodného agenta ze svého okolí a podle jeho názoru změní svůj vlastní názor.
+	\item Všichni sousedé -- agent se podívá na všechny agenty ve svém okolí a podle jejich průměrného názoru změní svůj vlastní názor.
+\end{itemize}
+
+V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vypočte rozdíl mezi svým názor a názorem okolí (tj. buď názor vybraného souseda, nebo průměrný názor všech sousedů), a následně posune svůj názor o zlomek tohoto rozdílu směrem k názoru okolí. Velikost zlomku je daná parametrem \texttt{changing-opinion-strength}.
+
 \chapter{Analýza a interpretace výsledků}
+
 \chapter{Závěr}
+
 \end{document}
