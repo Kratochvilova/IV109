@@ -260,6 +260,10 @@ to-report zero-pad [n places]
   let padding reduce word fput "" n-values padding-amount [0]
   report (word result padding)
 end
+
+to-report count-turtles-in [lower-interval upper-interval]
+  report ( count turtles with [ opinion >= lower-interval and opinion < upper-interval ] )
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 470
@@ -297,7 +301,7 @@ people
 people
 0
 300
-168
+100
 1
 1
 NIL
@@ -343,7 +347,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-2
+1
 
 BUTTON
 349
@@ -370,7 +374,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-0
+1
 
 SLIDER
 247
@@ -381,7 +385,7 @@ rewiring-probability
 rewiring-probability
 0
 100
-13
+30
 1
 1
 NIL
@@ -416,7 +420,7 @@ changing-opinion-strength
 changing-opinion-strength
 0
 1
-0.9
+0.5
 0.1
 1
 NIL
@@ -430,7 +434,7 @@ CHOOSER
 opinion-distribution
 opinion-distribution
 "uniform" "middle" "extremes"
-2
+0
 
 PLOT
 21
@@ -448,7 +452,7 @@ true
 true
 "set-plot-y-range 0 people" ""
 PENS
-"<0; 0.2)" 1.0 0 -2674135 true "" "plot count turtles with [opinion < 0.2]"
+"<0; 0.2)" 1.0 0 -2674135 true "" "count-turtles-in 0 0.2"
 "<0.2; 0.4)" 1.0 0 -955883 true "" "plot count turtles with [opinion >= 0.2 and opinion < 0.4]"
 "<0.4; 0.6)" 1.0 0 -1184463 true "" "plot count turtles with [opinion >= 0.4 and opinion < 0.6]"
 "<0.6; 0.8)" 1.0 0 -6565750 true "" "plot count turtles with [opinion >= 0.6 and opinion < 0.8]"
@@ -525,7 +529,7 @@ changing-opinion-prob
 changing-opinion-prob
 0
 100
-100
+10
 1
 1
 NIL
@@ -979,6 +983,38 @@ NetLogo 5.3.1
     </enumeratedValueSet>
     <enumeratedValueSet variable="stubborn-prob">
       <value value="0"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="experiment" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>histogram [opinion] of turtles</metric>
+    <enumeratedValueSet variable="opinion-distribution">
+      <value value="&quot;uniform&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="people">
+      <value value="100"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="average-node-degree">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strategy">
+      <value value="&quot;all neighbors&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="stubborn-prob">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-prob">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="network-type">
+      <value value="&quot;spatial-graph&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-opinion-strength">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="rewiring-probability">
+      <value value="30"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
