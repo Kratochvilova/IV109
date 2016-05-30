@@ -1,0 +1,6 @@
+spatial <- read.csv(file="random-alln-changes-1.csv",head=TRUE,sep=",")
+spatial1 <- read.csv(file="random-onen-changes-1-200people.csv",head=TRUE,sep=",")
+plot_colors <- rainbow(4)
+matplot(c(0:200), rowMeans(spatial), type="l", lty = 1, xlab = "time", ylab = "changes")
+with(spatial1, lines(c(0:200), rowMeans(spatial1), col = plot_colors[2]))
+legend("topright", legend = c("all neighbors", "one neighbor"), col=1:2, pch=1)
