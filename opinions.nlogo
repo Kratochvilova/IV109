@@ -457,11 +457,11 @@ true
 true
 "set-plot-y-range 0 people" ""
 PENS
-"<0; 0.2)" 1.0 0 -2674135 true "" "count-turtles-in 0 0.2"
-"<0.2; 0.4)" 1.0 0 -955883 true "" "plot count turtles with [opinion >= 0.2 and opinion < 0.4]"
-"<0.4; 0.6)" 1.0 0 -1184463 true "" "plot count turtles with [opinion >= 0.4 and opinion < 0.6]"
-"<0.6; 0.8)" 1.0 0 -6565750 true "" "plot count turtles with [opinion >= 0.6 and opinion < 0.8]"
-"<0.8; 1>" 1.0 0 -13840069 true "" "plot count turtles with [opinion >= 0.8]"
+"<0; 0.2)" 1.0 0 -2674135 true "" "plot count-turtles-in 0 0.2"
+"<0.2; 0.4)" 1.0 0 -955883 true "" "plot count-turtles-in 0.2 0.4"
+"<0.4; 0.6)" 1.0 0 -1184463 true "" "plot count-turtles-in 0.4 0.6"
+"<0.6; 0.8)" 1.0 0 -6565750 true "" "plot count-turtles-in 0.6 0.8"
+"<0.8; 1>" 1.0 0 -13840069 true "" "plot count-turtles-in 0.8 1.4"
 
 PLOT
 246
@@ -534,7 +534,7 @@ changing-opinion-prob
 changing-opinion-prob
 0
 100
-10
+100
 1
 1
 NIL
