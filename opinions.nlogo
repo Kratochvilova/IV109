@@ -264,6 +264,11 @@ end
 to-report count-turtles-in [lower-interval upper-interval]
   report ( count turtles with [ opinion >= lower-interval and opinion < upper-interval ] )
 end
+
+to-report max-opinion-from [percent]
+  let i (people - 1) * percent / 100
+  report item i sort [ opinion ] of turtles
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 470
@@ -301,7 +306,7 @@ people
 people
 0
 300
-100
+239
 1
 1
 NIL
@@ -374,7 +379,7 @@ CHOOSER
 changing-opinion-strategy
 changing-opinion-strategy
 "one neighbor" "all neighbors"
-1
+0
 
 SLIDER
 247
@@ -534,6 +539,34 @@ changing-opinion-prob
 1
 NIL
 HORIZONTAL
+
+PLOT
+26
+620
+226
+770
+max-opinion-from
+Time
+Number
+0.0
+200.0
+0.0
+1.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -8630108 true "" "plot max-opinion-from 0"
+"pen-1" 1.0 0 -13345367 true "" "plot max-opinion-from 10"
+"pen-2" 1.0 0 -13791810 true "" "plot max-opinion-from 20"
+"pen-3" 1.0 0 -11221820 true "" "plot max-opinion-from 30"
+"pen-4" 1.0 0 -14835848 true "" "plot max-opinion-from 40"
+"pen-5" 1.0 0 -13840069 true "" "plot max-opinion-from 50"
+"pen-6" 1.0 0 -10899396 true "" "plot max-opinion-from 60"
+"pen-7" 1.0 0 -1184463 true "" "plot max-opinion-from 70"
+"pen-8" 1.0 0 -612749 true "" "plot max-opinion-from 80"
+"pen-9" 1.0 0 -955883 true "" "plot max-opinion-from 90"
+"pen-10" 1.0 0 -2674135 true "" "plot max-opinion-from 100"
 
 @#$#@#$#@
 ## WHAT IS IT?
