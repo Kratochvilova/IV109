@@ -60,7 +60,10 @@ Uvažujeme dvě strategie pro změnu názorů:
 V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vypočte rozdíl mezi svým názor a názorem okolí (tj. buď názor vybraného souseda, nebo průměrný názor všech sousedů), a následně posune svůj názor o zlomek tohoto rozdílu směrem k názoru okolí. Velikost zlomku je daná parametrem \texttt{changing-opinion-strength}.
 
 \chapter{Analýza a interpretace výsledků}
+V tejto kapitole sa pozrieme na vplyv rôznych parametrov na priebeh formovania názorov. Z návrhu modelu vyplýva, že pokiaľ je graf vzťahov medzi ľuďmi spojitý, stav modelu sa vždy blíži k určitej dohode medzi agentmi (tzn. agenti sa dohodnú na nejakom jednotnom názore - prípadne na názore s malými odchýlkami). My pozorujeme rýchlosť akou sa agenti dohodnú, prípadne distribúciu názorov v krátkodobom horizonte, keď agenti preberajú názory iných len obmedzený čas.
 
+\section{Sila zmeny názoru}
+Parameter silu zmeny názoru skúmamame na každom type grafu. Fixujeme pritom parametre: stratégiu preberania názorov (na \i{one neighbor}), počiatočnú distribúciu (na \i{uniform}) a počet ľudí (100).  Každý obrázok znázorňuje porovnanie štyroch rôznych hodnôť sily (0.1, 0.5, 0.7, 1) pre daný typ grafu. Každá kombinácia pohyblivých parametrov 
 \chapter{Závěr}
 
 \end{document}
