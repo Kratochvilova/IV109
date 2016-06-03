@@ -4,7 +4,10 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{mwe}
 \usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{subcaption}
 \author{Pavla Kratochvílová, Adriana Šmijáková}
 \title{IV109 - Formace názorů}
 
@@ -57,13 +60,135 @@ Uvažujeme dvě strategie pro změnu názorů:
 	\item Všichni sousedé -- agent se podívá na všechny agenty ve svém okolí a podle jejich průměrného názoru změní svůj vlastní názor.
 \end{itemize}
 
-V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vypočte rozdíl mezi svým názor a názorem okolí (tj. buď názor vybraného souseda, nebo průměrný názor všech sousedů), a následně posune svůj názor o zlomek tohoto rozdílu směrem k názoru okolí. Velikost zlomku je daná parametrem \texttt{changing-opinion-strength}.
+V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vypočte rozdíl mezi svým názorem a názorem okolí (tj. buď názor vybraného souseda, nebo průměrný názor všech sousedů), a následně posune svůj názor o zlomek tohoto rozdílu směrem k názoru okolí. Velikost zlomku je daná parametrem \texttt{changing-opinion-strength} (sila změny názoru).
 
-\chapter{Analýza a interpretace výsledků}
-V tejto kapitole sa pozrieme na vplyv rôznych parametrov na priebeh formovania názorov. Z návrhu modelu vyplýva, že pokiaľ je graf vzťahov medzi ľuďmi spojitý, stav modelu sa vždy blíži k určitej dohode medzi agentmi (tzn. agenti sa dohodnú na nejakom jednotnom názore - prípadne na názore s malými odchýlkami). My pozorujeme rýchlosť akou sa agenti dohodnú, prípadne distribúciu názorov v krátkodobom horizonte, keď agenti preberajú názory iných len obmedzený čas.
+\chapter{Simulace a analýza}
+Model preberania názorov sme navrhli tak, že agenti sa snažia prispôsobiť okoliu, preto výsledok dlhodobého behu simulácie nie je zaujímavý. Pokiaľ je graf spojitý, agenti zo začiatku rýchlo konvergujú k nejakému spoločnému názoru, zhode a tým je zvyčajne hodnota pohybujúca sa v okolí $0.5$. Z toho dôvodu v analýze skúmame skôr priebeh formovania názorov namiesto pozorovnania konečného stavu. V tejto kapitole si rozoberieme vplyv parametrov na priebeh správania modelu.
 
 \section{Sila zmeny názoru}
-Parameter silu zmeny názoru skúmamame na každom type grafu. Fixujeme pritom parametre: stratégiu preberania názorov (na \i{one neighbor}), počiatočnú distribúciu (na \i{uniform}) a počet ľudí (100).  Každý obrázok znázorňuje porovnanie štyroch rôznych hodnôť sily (0.1, 0.5, 0.7, 1) pre daný typ grafu. Každá kombinácia pohyblivých parametrov 
+
+Tento parameter sme simuláciou skúmali pomocou premennej \i{zmena}(changes v obrázkoch), ktorá určuje súčet všetkých zmien medzi časovými úsekmi naprieč všetkými ľuďmi. Keďže je tento súčet ovplyvnený samotnou hodnotou parametru \texttt{changing-opinion-strength}, na obrázku 3.1(b) je hodnota normovaná. Na obrázku 3.2 vidíme porovnanie zmeny \texttt{changing-opinion-strength} pre rôzne grafy. Obrázky 3.1 aj 3.2 vznikli sprieberovaním $10$ behov za rovnako nastavenými parametrami. Grafy obsahujú zakaždým $100$ ľudí s priemerným stupňom vrcholu $7$ (okrem preferenčného grafu), stratégiou rozhodovanie \texttt{one neighbor} a uniformným počiatočným rozdelením. Graf typu Malý svet má ktomu nastavenú pravdepodobnosť predrátovania na 30\%, pri ktorej je priemerná najkratšia cesta medzi vrcholmi približne rovnaká ako pre preferenčný graf. Skúmané vlastnosti v tejto časti môžme pozorovať na popísaných obrázkoch.  
+
+Pokiaľ je nastavená sila zmeny názoru na hodnotu $0.5$, model sa najrýchlejšie ustáli na jednotmon názore. Ako sa však posúva ku $0$ alebo $1$, zmeny v názoroch trvajú dlhšie a sú výraznejšie. Najdlhšie trvá ustálenie názoru pre hodnotu $1$ ale tento prípad je odlišný od zvyšku hodnôt a to tým, že počas simulácie prestávajú ľudia upravovať len čiastočne ale preberú výsledný názor, ktorý im vznikne podľa vybranej stratégie (pre \texttt{one neighbor} preberú úplne názor nejakého zo susedov, pre \texttt{all neighbors} majú presnú hodnotu priemeru všetkých susedov). 
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{plots/spatial-g/spatialChanges1-9.png}
+  \caption{Nenormovaný graf}
+  \label{fig:sfig1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  
+  \includegraphics[width=1\linewidth]{plots/spatial-g/spatialChanges1-9norm.png}
+  \caption{Normovaný graf}
+  \label{fig:sfig2}
+\end{subfigure}
+\caption{Priestorový graf - vývin zmien s parametrom \texttt{changing-opinion-strength} v rozpätí $0.1$ - $0.9$}
+\label{fig:fig}
+\end{figure}
+
+
+Ďalším pozorovaním vyplynulo, že pri hodnotách menších ako 0.5 sú zmeny výraznejšie a dlhotrvajúcejšie ako pri hodnotách rovnako vzdialených od $0.5$ ale smerom k jednotke. Pokiaľ opomenieme hraničné hodnoty $0$ a $1$, sila zmeny názoru $0.1$ je najviac výrazná. Na obrázku 3.1(b) vidno, že pod touto hodnotou trvá zhoda najdlhšie a zároveň najviac ľudí mení názor.
+
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}[b]{0.475\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{plots/random-g/changesRandom.png}
+      \caption[Network2]%
+      {{\small Náhodný graf}}    
+      \label{fig:mean and std of net14}
+  \end{subfigure}
+  \hfill
+ \begin{subfigure}[b]{0.475\textwidth}   
+      \centering 
+      \includegraphics[width=\textwidth]{plots/small-world-g/changesSmallWorld.png}
+      \caption[]%
+      {{\small Spatial}}    
+      \label{fig:mean and std of net34}
+  \end{subfigure}
+  \vskip\baselineskip
+  
+    \begin{subfigure}[b]{0.475\textwidth}  
+      \centering 
+      \includegraphics[width=\textwidth]{plots/spatial-g/ChangesOneSpatial.png}
+      \caption[]%
+      {{\small Malý svet}}    
+      \label{fig:mean and std of net24}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.475\textwidth}   
+      \centering 
+      \includegraphics[width=\textwidth]{plots/prefferential-g/changesPrefferential.png}
+      \caption[]%
+      {{\small Preferenčný graf}}    
+      \label{fig:mean and std of net44}
+  \end{subfigure}
+  \caption[ Vývin zmien pre jednotlivé grafy so zmenou parametru ]
+  {\small Vývin veľkosti zmien názorov pre jednotlivé grafy s parametrom \texttt{changing-opinion-strength}}
+  \label{fig:mean and std of nets}
+\end{figure*}
+Keď porovnáme rôzne grafy, pozorujeme len malé zmeny pre $\texttt{changing-opinion-strength} < 1$. Rozdiel vidíme najviac pri spomenutej hodnote 1, vynikajú najmä preferenčný a náhodný graf. V preferenčnom grafe sa veľmi rýchlo názory rozšíria a následne už len malý počet ľudí mení názory v omnoho dlhšom časovom horizonte v porovnaní s inou topológiou, priestorový graf je týmito vlastnosťami podobný ale nie až tak výrazný. V náhodnom grafe sa ľudia zase najrýchlejšie zhodnú a ďalej sa stav nemení.
+
+\section{Počáteční rozložení názorů}
+Normálne rozdelenie s průměrem $0.5$ a standardní odchylkou $0.2$ má oproti zvyšným dvom podstatne väčší vplyv na vývin zmien názorov. Na obrázku 3.3 vidíme vplyv rôzneho nastavenia počiatočného rozloženia názorov, konkrétne pre náhodní graf so silou zmeny názoru $0.1$. Keďže z povahy modelu sa blížia názory ľudí k okoliu hodnoty $0.5$, toto rozdelenie urýchli konvergáciu k tejto hodnote.
+\begin{figure}
+  \includegraphics[width=\textwidth]{plots/small-world-g/smallWorldDistribution.png}
+  \caption{Vývin veľkosti zmien s parametrom \texttt{opinion-distribution} }
+\end{figure}
+
+
+\section{Stratégia zmeny názoru}
+Podobne ako počiatočné normálne rozdelenie názorov, stratégia zmeny názoru zohľadnenia názoru všetkých susedov urýchľuje ustálenie jednotného názoru. Tento trend ukazuje obrázok 3.4, ktorý je vytvorený nad priestorovým grafom so silou zmeny názoru $0.1$.  
+\begin{figure}
+  \includegraphics[width=\textwidth]{plots/random-g/randomAllVsOne.png}
+  \caption{Vývin veľkosti zmien s parametrom \texttt{opinion-distribution} }
+\end{figure}
+
+\section{Typ grafu}
+Zmeny v chovaní modelu pri rôznej topológii sme mohli vidieť na obrázku 3.1, ktorý však nevypovedal o konkrétnych hodnotách názorov.
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}[b]{0.475\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{plots/max-values/random-MaxV.png}
+      \caption[Network2]%
+      {{\small Náhodný graf}}    
+      \label{fig:mean and std of net14}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.475\textwidth}  
+      \centering 
+      \includegraphics[width=\textwidth]{plots/max-values/spatial-MaxV.png}
+      \caption[]%
+      {{\small Priestorový graf}}    
+      \label{fig:mean and std of net24}
+  \end{subfigure}
+  \vskip\baselineskip
+  \begin{subfigure}[b]{0.475\textwidth}   
+      \centering 
+      \includegraphics[width=\textwidth]{plots/max-values/small-world-MaxV.png}
+      \caption[]%
+      {{\small Malý svet}}    
+      \label{fig:mean and std of net34}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.475\textwidth}   
+      \centering 
+      \includegraphics[width=\textwidth]{plots/max-values/prefferentialMaxV.png}
+      \caption[]%
+      {{\small Preferenčný graf}}    
+      \label{fig:mean and std of net44}
+  \end{subfigure}
+  \caption[ Vývin zmien pre jednotlivé grafy ]
+  {\small Vývin hodnôt názorov pre jednotlivé grafy}
+  \label{fig:mean and std of nets}
+\end{figure*}
+ 
 \chapter{Závěr}
 
 \end{document}
