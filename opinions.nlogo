@@ -1,10 +1,5 @@
-;; promenne, ktere nas budou zajimat pozdeji pri analyze
-;; potom je jeste rozlozeni stupnu vrcholu, ale to neni jedna promenna
 globals
 [
-  clustering-coefficient               ;; the clustering coefficient of the network
-  average-path-length                  ;; average path length of the network
-  colors                               ;; pool of colors
   sum-change                           ;; sum of changed opinions
 ]
 
@@ -22,10 +17,10 @@ turtles-own
 to setup
   clear-all
   make-turtles
-  if network-type = "random-graph" [ random-graph ]                  ;; circle
-  if network-type = "spatial-graph" [ spatial-graph ]                ;; random
-  if network-type = "small-world-graph" [ small-world-graph ]        ;; circle
-  if network-type = "prefferential-graph" [ prefferential-graph ]    ;; random (postupne)
+  if network-type = "random-graph" [ random-graph ]
+  if network-type = "spatial-graph" [ spatial-graph ]
+  if network-type = "small-world-graph" [ small-world-graph ]
+  if network-type = "prefferential-graph" [ prefferential-graph ]
   color-turtles
   make-stubborn
   reset-ticks
@@ -221,6 +216,7 @@ to opinion-strategy-2
   ask turtles with [ stubborn? = false ]
   [
     let starting-opinion opinion
+
     if random 100 < changing-opinion-prob [
       ask link-neighbors [ set sum-opinion sum-opinion + opinion ]
       let difference 0
@@ -229,6 +225,7 @@ to opinion-strategy-2
       set-color
       set sum-opinion 0
     ]
+
     set sum-change sum-change + abs (starting-opinion - opinion)
   ]
 end
@@ -306,7 +303,7 @@ people
 people
 0
 300
-239
+200
 1
 1
 NIL
@@ -338,7 +335,7 @@ average-node-degree
 average-node-degree
 0
 people - 1
-7
+6
 1
 1
 NIL
@@ -352,7 +349,7 @@ CHOOSER
 network-type
 network-type
 "random-graph" "spatial-graph" "small-world-graph" "prefferential-graph"
-1
+3
 
 BUTTON
 349
@@ -425,7 +422,7 @@ changing-opinion-strength
 changing-opinion-strength
 0
 1
-0.5
+0.3
 0.1
 1
 NIL
@@ -439,7 +436,7 @@ CHOOSER
 opinion-distribution
 opinion-distribution
 "uniform" "middle" "extremes"
-0
+2
 
 PLOT
 21
