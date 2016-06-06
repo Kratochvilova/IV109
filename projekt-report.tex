@@ -30,13 +30,13 @@ Formování názorů modelujeme pomocí agentů, kdy každý agent má přiděle
 Model se skládá ze dvou částí: nejprve se vytvoří síť agentů a každému se nastaví názor, a poté probíhá samotný proces formování názorů.
 
 \subsection{Tvorba grafu}
-Všechny grafy jsou parametrizovány počtem vrcholů (parametr \texttt{people}) a průměrným stupněm vrcholů (parametr \texttt{average-node-degree}). Uvažovali jsme čtyři různé typy grafů:
+Všechny grafy jsou parametrizovány počtem vrcholů (parametr \texttt{people}) a prů\-měr\-ným stupněm vrcholů (parametr \texttt{average-node-degree}). Uvažovali jsme čtyři různé typy grafů:
 
 \begin{itemize}
-	\item Náhodný graf vzniká náhodným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů.
+	\item Náhodný graf vzniká náhodným přidáváním hran, dokud neodpovídá prů\-měr\-ný stupeň vrcholů.
 	\item Prostorový graf (spatial graph) je převzatý z již existujícího modelu \textit{Virus on a Network}. Je vytvořen náhodným rozmístěním agentů do prostoru a následným přidáváním hran, dokud neodpovídá průměrný stupeň vrcholů. Hrany jsou přidávány mezi náhodným agentem a jemu nejbližším agentem, se kterým ještě není spojen.
 	\item Malý svět je založený na existujícím modelu \textit{Small World}. Nejprve je vytvořen cyklus všech agentů, a poté jsou přidány hrany mezi agenty vzájemně vzdálenými méně než nějaké n tak, aby se stupeň vrcholu co nejvíce přiblížil zvolenému průměrnému stupni. Následně některé hrany zamění jeden svůj konec za náhodný jiný. Počet takových hran je dán nepřímo parametrem \texttt{rewiring-prob}.
-	\item Preferenční graf je založený na existujícím modelu \textit{Prefferential Attachment}. Vzniká postupným přidáváním vrcholů, přičemž nový vrchol se spojí s nějakým již existujícím. Upřednostňovány jsou vrcholy, které mají více hran -- toho je dosaženo náhodným výběrem z konců hran raději než výběrem z vrcholů. V preferenčním grafu se parametr \texttt{average-node-degree} nebere v úvahu.
+	\item Preferenční graf je založený na existujícím modelu \textit{Prefferential Attachment}. Vzniká postupným přidáváním vrcholů, přičemž nový vrchol se spojí s nějakým již existujícím. Upřednostňovány jsou vrcholy, které mají více hran -- toho je dosaženo náhodným výběrem z konců hran raději než výběrem z vrcholů. V preferenčním grafu se parametr \texttt{average\--node\--degree} nebere v úvahu.
 \end{itemize}
 
 Výběr typu grafu lze provést pomocí parametru \texttt{network-type}.
@@ -50,7 +50,7 @@ Agentům jsou přiřazeny názory v intervalu $\langle 0, 1 \rangle$. Uvažovali
 	\item Normální rozložení se středem v extrémech -- stejné jako normální rozložení v předchozím bodě, ale posunuté tak, aby nejvíce názorů bylo extrémních (tj. těsně nad $0$ a těsně pod $1$) a nejméně středových (tj. okolo $0.5$).
 \end{itemize}
 
-Počáteční rozložení názorů lze změnit pomocí parametru \texttt{opinion-distribution}. 
+Počáteční rozložení názorů lze změnit pomocí parametru \texttt{opinion-distri\-bution}. 
 
 \subsection{Změny názorů}
 Uvažujeme dvě strategie pro změnu názorů:
@@ -69,46 +69,46 @@ V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vy
 
 
 
-
-
-
-
 \chapter{Simulace a analýza}
-Model preberania názorov sme navrhli tak, že agenti sa snažia prispôsobiť okoliu, preto výsledok dlhodobého behu simulácie nie je zaujímavý. Pokiaľ je graf spojitý, agenti zo začiatku rýchlo konvergujú k nejakému spoločnému názoru, zhode a tým je zvyčajne hodnota pohybujúca sa v okolí $0.5$. Z toho dôvodu v analýze skúmame skôr priebeh formovania názorov namiesto pozorovnania konečného stavu. 
+Model formování názorů jsme navrhly tak, že se agenti svými názory neustále přibližují svému okolí. Jestliže je tedy graf spojitý, názory konvergují k nějaké hodnotě, v našem případě v okolí $0.5$. Z toho důvodu jsme se spíše než na výsledek dlouhodobého běhu simulace zaměřily na průběh samotného formování názorů.
 
-V ďalšej analýze používame obrázky, ktoré vznikli zafixovaním počtu ľudí na 100, priemerného stupňa vrcholov v grafe na 7 a pri grafe typu Malý svet pravdepodobnosť predrátovania na 30\%, vďaka ktorej má graf priemernú dĺžku cesty medzi ľubovoľními vrcholmi podobnú ako preferenčný. Pokiaľ skúmame iný parameter ako silu zmeny názoru, fixujeme ju na $0.1$. Pre stratégiu zmeny názoru používame taktiež jedného suseda pri iných skúmaných parametroch,keďže spomaľuje priebeh zmien. V prípade fixácie počiatočného rozdelenia názorov použijeme normálne rozdelenie.
+Při analýze pracujeme s grafy fixní velikosti: počet lidí je 100; průměrný stupeň vrcholů (s výjimkou preferenčního grafu) je 7; a pravděpodobnost předrátování $30\thinspace\%$, díky čemuž má graf malý svět podobnou průměrnou délku nej\-kratších cest jako preferenční graf.
 
-Ďalej si v kapitole rozoberieme vplyvy parametrov na priebeh správania modelu. Správanie pozorujeme ako súčet zmien v názoroch jednotlivých ľudí. Takýto súčet nám ukazuje celkovú dynamiku modelu. Pri pozorovaní parametru typ grafu používame aj jednotlivé názory nachádzajúce sa v určitom percentuálnom umiestnení v spektre hodnôt názorov. Táto metrika nám zase znázorňuje aj vývoj hodnoty v čase a nielen súhrnnú dynamiku.
+V některých případech je třeba zafixovat hodnoty parametrů, na které se právě nezaměřujeme. V takových případech je hodnota parametru \texttt{changing\--opinion\--strength} $0.1$, počáteční rozložení názorů je uniformní a strategie pro změnu názorů je jeden soused.
 
-\section{Sila zmeny názoru}
+\section{Množství změn}
+V této sekci jsou rozebrány vlivy jednotlivých parametrů na množství změn názorů v čase. Množství změn (v diagramech \texttt{changes}) je určeno jako součet změn všech názorů agentů, které proběhnou v daném časovém okamžiku, a dobře tak odráží celkovou dynamiku modelu.
 
-Silu zmeny názoru sme simuláciou skúmali pomocou už spomínanej premennej \textit{zmena} (changes v obrázkoch), ktorá určuje súčet všetkých zmien medzi súčasným a predchádzajúcim časovým okamihom naprieč všetkými osobami. Keďže je tento súčet ovplyvnený samotnou hodnotou parametru \texttt{changing-opinion-strength}, na obrázku \ref{fig:zmeny-normovany} je hodnota normovaná. Na obrázku \ref{fig:zmeny-grafy} vidíme porovnanie zmeny \texttt{changing-opinion-strength} pre rôzne grafy. Obrázky \ref{fig:zmeny-nenormovany-normovany} aj \ref{fig:zmeny-grafy} vznikli spriemerovaním $10$ behov s rovnako nastavenými parametrami. Skúmané vlastnosti v tejto časti môžme pozorovať na popísaných obrázkoch.  
+Všechny diagramy, které zachycují množství změn názorů, vznikly zprů\-mě\-ro\-vá\-ním deseti běhů se stejně nastavenými parametry.
 
-Pokiaľ je nastavená sila zmeny názoru na hodnotu $0.5$, model sa najrýchlejšie ustáli na jednotmon názore. Ako sa však posúva ku $0$ alebo $1$, zmeny v názoroch trvajú dlhšie a sú výraznejšie. Najdlhšie trvá ustálenie názoru pre hodnotu $1$ ale tento prípad je odlišný od zvyšku hodnôt a to tým, že počas simulácie prestávajú ľudia upravovať len čiastočne ale preberú výsledný názor, ktorý im vznikne podľa vybranej stratégie (pre \texttt{one neighbor} preberú úplne názor nejakého zo susedov, pre \texttt{all neighbors} majú presnú hodnotu priemeru všetkých susedov). Hodnota $1$ je zároveň jediná kde je možné sledovať za nastavenia stratégie jedného suseda sledovať inú výslednú hodnotu ako blízku hodnote $0.5$.
+\subsection{Síla změny názoru}
+Nejprve chceme ukázat vliv parametru \texttt{changing-opinion-strength} na množ\-ství změn názorů v čase. Vzhledem k tomu, že jsou velikosti změn názorů ovlivněné samotnou hodnotou parametru \texttt{changing-opinion-strength}, obrá\-zek \ref{fig:zmeny-nenormovany-normovany} zobrazuje jak diagram s původními hodnotami změn, tak i diagram s~normovanými hodnotami. 
 
-\begin{figure}
+\begin{figure}[h]
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=1\linewidth]{plots/spatial-g/spatialChanges1-9.png}
-  \caption{Nenormovaný graf}
+  \caption{Nenormovaný diagram}
   \label{fig:zmeny-nenormovany}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   
   \includegraphics[width=1\linewidth]{plots/spatial-g/spatialChanges1-9norm.png}
-  \caption{Normovaný graf}
+  \caption{Normovaný diagram}
   \label{fig:zmeny-normovany}
 \end{subfigure}
-\caption{Priestorový graf - vývin zmien s parametrom \texttt{changing-opinion-strength} v rozpätí $0.1$ - $0.9$}
+\caption{Prostorový graf -- vývin množství změn vlivem parametru \texttt{changing-opinion-strength}}
 \label{fig:zmeny-nenormovany-normovany}
 \end{figure}
 
+Je zde ukázáno, že nejrychleji se názor ustálí při síle změny názoru $0.5$. Čím více se však síla změny názoru blíží k $0$ nebo $1$, tím déle trvá ustálení názoru. Nejvýraznější by byl případ parametru s hodnotou $1$, ale tato situace je velice specifická -- agenti neupravují svůj názor jen částečně, ale názor okolí (podle vybrané strategie) zcela přeberou -- a proto jej do analýzy nezahrnujeme. Hodnota $1$ je zároveň jediná, u které je možné sledovat konvergenci názorů i k~hodnotě vzdálené od $0.5$.
 
-Ďalším pozorovaním vyplynulo, že pri hodnotách menších ako 0.5 sú zmeny výraznejšie a dlhotrvajúcejšie ako pri hodnotách rovnako vzdialených od $0.5$ ale smerom k jednotke. Pokiaľ opomenieme hraničné hodnoty $0$ a $1$, sila zmeny názoru $0.1$ je najviac výrazná. Na obrázku \ref{fig:zmeny-normovany} vidno, že pod touto hodnotou trvá zhoda najdlhšie a zároveň najväčší počet ľudí mení názor.
+V normovaném diagramu je množství změn výraznější pro extrémnější hodnoty síly změny názoru (tj. bližší k $0$ nebo $1$) a konvergence trvá déle. Pokud potom porovnáme hodnoty stejně vzdálené od $0.5$, výraznější změny jsou u hodnot menších než $0.5$. 
 
+Na obrázku \ref{fig:zmeny-grafy} vidíme porovnání vlivu \texttt{changing-opinion-strength} pro různé typy grafů.
 
-\begin{figure*}
+\begin{figure*}[h]
   \centering
   \begin{subfigure}[b]{0.475\textwidth}
       \centering
@@ -122,7 +122,7 @@ Pokiaľ je nastavená sila zmeny názoru na hodnotu $0.5$, model sa najrýchlej�
       \centering 
       \includegraphics[width=\textwidth]{plots/small-world-g/changesSmallWorld.png}
       \caption[]%
-      {{\small Priestorový graf}}    
+      {{\small Prostorový graf}}    
       \label{fig:zmeny-prostorovy}
   \end{subfigure}
   \vskip\baselineskip
@@ -131,7 +131,7 @@ Pokiaľ je nastavená sila zmeny názoru na hodnotu $0.5$, model sa najrýchlej�
       \centering 
       \includegraphics[width=\textwidth]{plots/spatial-g/ChangesOneSpatial.png}
       \caption[]%
-      {{\small Malý svet}}    
+      {{\small Malý svět}}    
       \label{fig:zmeny-maly svet}
   \end{subfigure}
   \quad
@@ -139,38 +139,42 @@ Pokiaľ je nastavená sila zmeny názoru na hodnotu $0.5$, model sa najrýchlej�
       \centering 
       \includegraphics[width=\textwidth]{plots/prefferential-g/changesPrefferential.png}
       \caption[]%
-      {{\small Preferenčný graf}}    
+      {{\small Preferenční graf}}    
       \label{fig:zmeny-preferencni}
   \end{subfigure}
-  \caption[ Vývin zmien pre jednotlivé grafy so zmenou parametru ]
-  {\small Vývin veľkosti zmien názorov pre jednotlivé grafy s parametrom \texttt{changing-opinion-strength}}
+  \caption[]
+  {\small Vývin množství změn pro jednotlivé grafy vlivem parametru \texttt{changing-opinion-strength}}
   \label{fig:zmeny-grafy}
 \end{figure*}
-Keď porovnáme rôzne grafy, pozorujeme len malé zmeny pre $\texttt{changing-opinion-strength} < 1$. Rozdiel vidíme najviac pri spomenutej hodnote 1, vynikajú najmä preferenčný a náhodný graf. V preferenčnom grafe sa veľmi rýchlo názory rozšíria a následne už len malý počet ľudí mení názory v omnoho dlhšom časovom horizonte v porovnaní s inou topológiou, priestorový graf je týmito vlastnosťami podobný ale nie až tak výrazný. V náhodnom grafe sa ľudia zase najrýchlejšie zhodnú a ďalej sa stav nemení.
 
-Pri popise ďalších parametrov sme už nepoužívali nastavenie $\texttt{changing-opinion-strength} = 1$ práve kvôli tomu, že zmení charakter modelu (rozdelenie na spojitý názor prestáva mať zmysel zároveň so stratégiou jedného suseda a problém sa dá pozorovať ako n diskrétnych názorov).
+Když porovnáme různé grafy, pozorujeme pouze malé rozdíly pro hodnoty $\texttt{changing-opinion-strength} < 1$. Pokud se však zaměříme na hodnotu $1$, vyniknou zejména preferenční a náhodný graf. V preferenčním grafu se velmi rychle názory rozšíří a následně už jen malý počet agentů mění názory v porovnání s~jinou topologií. Prostorový graf je těmito vlastnostmi podobný, ale o něco méně výrazný. V náhodném grafu se agenti zase nejrychleji shodnou a dále se stav nemění.
 
-\section{Počáteční rozložení názorů}
-Normálne rozdelenie s průměrem $0.5$ a standardní odchylkou $0.2$ má oproti zvyšným dvom podstatne väčší dopad na vývin zmien názorov. Na obrázku \ref{fig:zmeny-rozlozeni} vidíme vplyv rôzneho nastavenia počiatočného rozloženia názorov, konkrétne pre náhodní graf so silou zmeny názoru $0.1$. Keďže z povahy modelu sa blížia názory ľudí k okoliu hodnoty $0.5$, toto rozdelenie urýchli konvergenciu k tejto hodnote.
-\begin{figure}
+\subsection{Počáteční rozložení názorů}
+Diagram \ref{fig:zmeny-rozlozeni}, vytvořený nad náhodným grafem, ukazuje vliv počátečního rozložení názorů na množství změn. Rozložení \texttt{middle} zde označuje normální rozložení s průměrem $0.5$ a standardní odchylkou $0.2$, \texttt{extremes} označuje stejné rozložení, ale posunuté tak, aby nejvíce názorů bylo extrémních (tj. těsně nad $0$ a těsně pod $1$) a nejméně středových (tj. okolo $0.5$). 
+
+Normální rozložení má oproti ostatním větší dopad na vývin množství změn názorů. Vzhledem k tomu, že názory lidí v našem modelu konvergují k hodnotě $0.5$, toto rozložení konvergenci výrazně urychlí.
+
+\begin{figure}[h]
   \includegraphics[width=\textwidth]{plots/small-world-g/smallWorldDistribution.png}
-  \caption{Vývin veľkosti zmien s parametrom \texttt{opinion-distribution} }
+  \caption{Vývin množství změn vlivem parametru \texttt{opinion-distribution}}
   \label{fig:zmeny-rozlozeni}
 \end{figure}
 
+\subsection{Strategie změny názoru}
+Podobně jako počáteční normální rozložení názorů, strategie zohledňující všechny sousedy urychluje ustálení jednotného názoru. Tento trend ukazuje diagram \ref{fig:zmeny-strategie}, který byl vytvořen nad prostorovým grafem.
 
-\section{Stratégia zmeny názoru}
-Podobne ako počiatočné normálne rozdelenie názorov, stratégia zmeny názoru zohľadnenia názoru všetkých susedov urýchľuje ustálenie jednotného názoru. Tento trend ukazuje obrázok \ref{fig:zmeny-strategie}, ktorý je vytvorený nad priestorovým grafom.  
-\begin{figure}
+\begin{figure}[h]
   \includegraphics[width=\textwidth]{plots/random-g/randomAllVsOne.png}
-  \caption{Vývin veľkosti zmien s parametrom \texttt{changing-opinion-strategy} }
+  \caption{Vývin množství změn vlivem parametru \texttt{changing-opinion-strategy}}
   \label{fig:zmeny-strategie}
 \end{figure}
 
-\section{Typ grafu}
-Zmeny v chovaní modelu pri rôznej topológii sme mohli vidieť už na obrázku \ref{fig:zmeny-nenormovany-normovany}, ktorý bol rozobratý v kapitole 3.1, avšak nevypovedal o konkrétnych hodnotách názorov. Priebeh zmien hodnôt môžme vidieť na obrázku \ref{fig:prubeh-grafy}. Znázorňuje názory nachádzajúce sa v určitom percentuálnom umiestnení v spektre hodnôt od najnižšej (0\%) po najvyššiu (100\%). Stredná hodnotá má na obrázku hodnotu 50\%. Oproti ostatným, tento obrázok nevznikol spriemerovaním hodnôt z viacerých behov ale znázorňuje len priebeh v jednom behu pre každý typ grafu. Napriek tomu je vzorka reprezentatívna aj pre opakovaný beh. Pozoruje podobné vlastnosti medzi priestorovým a preferenčným grafom podobne ako v prípade obrázku \ref{fig:zmeny-nenormovany-normovany}. V náhodnom grafe a malom svete zase názory veľmi rýchlo splinú do jedného s hodnotou v okoli $0.5$.
+\section{Průběh formování názorů na různých grafech}
+Změny chování modelu pro různé topologie ukazoval už obrázek \ref{fig:zmeny-nenormovany-normovany}, avšak nevypovídal o konkrétních hodnotách názorů. Průběh změn hodnot můžeme vidět na obrázku \ref{fig:prubeh-grafy}. Znázorňuje názory nacházející se v určitém percentuálním umístění ve spektru hodnot od nejnižší (0\thinspace\%) po nejvyšší (100\thinspace\%). Střední hodnota má v diagramech hodnotu (50\thinspace\%). Oproti předchozím tyto diagramy nevznikly zprůměrováním hodnot z více běhů, ale znázorňují jen průběh jednoho běhu. Navzdory tomu je vzorek reprezentativní i pro opakovaný běh.
 
-\begin{figure*}
+Pozorujeme podobné vlastnosti grafů jako v případě obrázku \ref{fig:zmeny-nenormovany-normovany}. V náhodném grafu a v malém světě názory velmi rychle konvergují a dále zůstávají neměnné.
+
+\begin{figure*}[h]
   \centering
   \begin{subfigure}[b]{0.475\textwidth}
       \centering
@@ -203,8 +207,8 @@ Zmeny v chovaní modelu pri rôznej topológii sme mohli vidieť už na obrázku
       {{\small Preferenčný graf}}    
       \label{fig:prubeh-preferencni}
   \end{subfigure}
-  \caption[ Vývin zmien pre jednotlivé grafy ]
-  {\small Vývin hodnôt názorov pre jednotlivé grafy}
+  \caption[]
+  {\small Vývin hodnot názorů pro jednotlivé grafy}
   \label{fig:prubeh-grafy}
 \end{figure*}
  
