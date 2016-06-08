@@ -102,7 +102,7 @@ Nejprve chceme ukázat vliv parametru \texttt{changing-opinion-strength} na mno�
 \label{fig:zmeny-nenormovany-normovany}
 \end{figure}
 
-Je zde ukázáno, že nejrychleji se názor ustálí při síle změny názoru $0.5$. Čím více se však síla změny názoru blíží k $0$ nebo $1$, tím déle trvá ustálení názoru. Nejvýraznější by byl případ parametru s hodnotou $1$, ale tato situace je velice specifická -- agenti neupravují svůj názor jen částečně, ale názor okolí (podle vybrané strategie) zcela přeberou -- a proto jej do analýzy nezahrnujeme. Hodnota $1$ je zároveň jediná, u které je možné sledovat konvergenci názorů i k~hodnotě vzdálené od $0.5$.
+Je zde ukázáno, že nejrychleji se názor ustálí při síle změny názoru $0.5$. Čím více se však síla změny názoru blíží k $0$ nebo $1$, tím déle trvá ustálení názoru. Nejvýraznější by byl případ parametru s hodnotou $1$, ale tato situace je velice specifická -- agenti neupravují svůj názor jen částečně, ale názor okolí (podle vybrané strategie) zcela přeberou -- a proto jej do analýzy mimo parametr \texttt{changing-opinion-strength} nezahrnujeme. Hodnota $1$ je zároveň jediná, u které je možné sledovat konvergenci názorů i k~hodnotě vzdálené od $0.5$.
 
 V normovaném diagramu je množství změn výraznější pro extrémnější hodnoty síly změny názoru (tj. bližší k $0$ nebo $1$) a konvergence trvá déle. Pokud potom porovnáme hodnoty stejně vzdálené od $0.5$, výraznější změny jsou u hodnot menších než $0.5$. 
 
@@ -170,7 +170,7 @@ Podobně jako počáteční normální rozložení názorů, strategie zohledňu
 \end{figure}
 
 \section{Průběh formování názorů na různých grafech}
-Změny chování modelu pro různé topologie ukazoval už obrázek \ref{fig:zmeny-nenormovany-normovany}, avšak nevypovídal o konkrétních hodnotách názorů. Průběh změn hodnot můžeme vidět na obrázku \ref{fig:prubeh-grafy}. Znázorňuje názory nacházející se v určitém percentuálním umístění ve spektru hodnot od nejnižší (0\thinspace\%) po nejvyšší (100\thinspace\%). Střední hodnota má v diagramech hodnotu (50\thinspace\%). Oproti předchozím tyto diagramy nevznikly zprůměrováním hodnot z více běhů, ale znázorňují jen průběh jednoho běhu. Navzdory tomu je vzorek reprezentativní i pro opakovaný běh.
+Změny chování modelu pro různé topologie ukazoval už obrázek \ref{fig:zmeny-nenormovany-normovany}, avšak nevypovídal o konkrétních hodnotách názorů. Průběh změn hodnot můžeme vidět na obrázku \ref{fig:prubeh-grafy}. Znázorňuje názory nacházející se v určitém percentuálním umístění ve spektru hodnot od nejnižší (0\thinspace\%) po nejvyšší (100\thinspace\%). Střední hodnota má v diagramech hodnotu 50\thinspace\%. Oproti předchozím tyto diagramy nevznikly zprůměrováním hodnot z více běhů, ale znázorňují jen průběh jednoho běhu. Navzdory tomu je vzorek reprezentativní i pro opakovaný běh.
 
 Pozorujeme podobné vlastnosti grafů jako v případě obrázku \ref{fig:zmeny-nenormovany-normovany}. V náhodném grafu a v malém světě názory velmi rychle konvergují a dále zůstávají neměnné.
 
