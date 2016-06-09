@@ -213,5 +213,13 @@ Pozorujeme podobné vlastnosti grafů jako v případě obrázku \ref{fig:zmeny-
 \end{figure*}
  
 \chapter{Závěr}
+K formovaniu názorov sme zvolili prístup postupného preberania názorov okolia každým agentom simultánne. Agenti sú usporiadaní v určitej typológii, kde vrcholmi sú ľudia a hranami väzby medzi nimi. Agenti môžu zistiť len názor svojich susedov, s ktorými sú prepojený hranou. 
 
+Celkovo sme vybrali 4 typy grafov - referenčný, náhodný, priestorový a tzv. malý svet. Preberanie názoru prebieha buď na základe jedného náhodného suseda alebo celého okolia, pričom miera prebratia názoru je taktiež parametrizovaná. Napriek rôznorodosti grafovej štruktúre a dvom typom stratégie preberania názorov, simulácie neukázali výrazný rozdiel v správaní modelu. Pridali sme ďalší parameter - počiatočné rozdelenie hodnôt názorov.
+
+Žiaden z parametrov výrazne neovplyvnil výsledný názor po ustálení zmien. Najväčší dopad mali jednotlivé parametre na rýchlosť konvergencie k dohode. Preto sme namiesto hodnôt názorov skúmali rýchlosť vývoja. Veľký počet parametrov nám však znemožnil podrobnejšiu analýzu menej výrazných javov v krátkodobom horizonte.
+
+Projekt by sa dal rozšíriť dvoma spôsobmi, už spomínanou podrobnejšou analýzou (či už percentuálneho zastúpenia jednotlivých intervalov hodnôt počas vývoja, záverečnej hodnoty alebo inej charakteristiky) a samotným modelom. Pre zvýšenie realistickosti by bolo možné do modelu doplniť ľudí s nemenným názorom, ktorí by však ovplyvňovali okolie. Títo ľudia by znemožnili všeobecnú zhodu a model by sa správal podstatne dynamickejšie. Ďalším vylepšením môže byť pravdepodobnosť zmeny názoru, čo by zamedzilo okamžitej snahe priblížiť sa názorom okoliu agentom. V prípade tohto parametru by však možno išlo len o ďalšie ovplyvňovania rýchlosti konvergencie. Oba parametre sú obsiahnuté v momentálnom modele ale v analýze sme na ne nebrali ohľad.
+
+Vytvorili sme model formovania spojitého názoru. Napriek väčšiemu množstvu parametrov sa model správa rovnorodo a konverguje k približne rovnakej hodnote. Tieto parametre nám na druhú stranu znáročnili analýzu. Nakoniec sme navrhli rozšírenia, ktoré by mohli model viac priblížiť skutočnosti a zároveň by ho mohli spraviť zaujímavejším.
 \end{document}
