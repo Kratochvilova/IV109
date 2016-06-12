@@ -15,21 +15,18 @@
 \maketitle
 % stručné uvedení do tématu, objasnění základních pojmů
 \chapter{Úvod}
-
-\chapter{Návrh modelu}
-% přesná formulace modelovaného problému, případná relevantní data
-\section{Formulace problému}
 Naším cílem je zachytit proces formování názorů, který probíhá při interakcích lidí v sociální síti. Vycházíme z myšlenky, že názory člověka jsou do značné míry ovlivněny názory v jeho okolí. Uvažujeme přitom spojitý názor -- člověk nemusí pouze zcela přijmout nebo zamítnout názor svého okolí, ale může jen lehce poupravit svůj vlastní názor tak, aby se více přiblížil názoru okolí. 
 
-Formování názorů zkoumáme na několika různých typech sítí a s různým počátečním rozložením názorů. 
+Formování názorů zkoumáme s různým počátečním rozložením názorů a na několika typech sítí: náhodný graf, prostorový graf, malý svět a preferenční graf. Ačkoliv se neumíme zcela přiblížit reálným komplexním sítím, vybrané grafy mají některé vhodné vlastnosti, které nalezneme i u komplexních sítích. 
 
-% popis zvoleného přístupu k modelování a základních prvků modelu, vztahů a zpětných vazeb, vysvětlení základních rovnic/pravidel
-\section{Model}
+Náhodný graf a malý svět mají oproti ostatním grafům poměrně malé průměrné vzdálenosti mezi vrcholy. Prostorový graf a malý svět zase vykazují poměrně vysoký stupeň shlukování. Preferenční graf jsme zařadily pro jeho distribuci stupňů vrcholů, která se řídí mocninným zákonem.
+
+\chapter{Návrh modelu}
 Formování názorů modelujeme pomocí agentů, kdy každý agent má přidělen názor vyjádřený reálným číslem z intervalu $\langle 0, 1 \rangle$. Agenti jsou vzájemně propojeni v rámci určitého grafu a interagují spolu pouze agenti spojení vazbou.
 
 Model se skládá ze dvou částí: nejprve se vytvoří síť agentů a každému se nastaví názor, a poté probíhá samotný proces formování názorů.
 
-\subsection{Tvorba grafu}
+\section{Tvorba grafu}
 Všechny grafy jsou parametrizovány počtem vrcholů (parametr \texttt{people}) a prů\-měr\-ným stupněm vrcholů (parametr \texttt{average-node-degree}). Uvažovali jsme čtyři různé typy grafů:
 
 \begin{itemize}
@@ -41,7 +38,7 @@ Všechny grafy jsou parametrizovány počtem vrcholů (parametr \texttt{people})
 
 Výběr typu grafu lze provést pomocí parametru \texttt{network-type}.
 
-\subsection{Počáteční rozložení názorů}
+\section{Počáteční rozložení názorů}
 Agentům jsou přiřazeny názory v intervalu $\langle 0, 1 \rangle$. Uvažovali jsme tři možná počáteční rozložení názorů:
 
 \begin{itemize}
@@ -52,7 +49,7 @@ Agentům jsou přiřazeny názory v intervalu $\langle 0, 1 \rangle$. Uvažovali
 
 Počáteční rozložení názorů lze změnit pomocí parametru \texttt{opinion-distri\-bution}. 
 
-\subsection{Změny názorů}
+\section{Změny názorů}
 Uvažujeme dvě strategie pro změnu názorů:
 
 \begin{itemize}
@@ -60,7 +57,7 @@ Uvažujeme dvě strategie pro změnu názorů:
 	\item Všichni sousedé -- agent se podívá na všechny agenty ve svém okolí a podle jejich průměrného názoru změní svůj vlastní názor.
 \end{itemize}
 
-V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vypočte rozdíl mezi svým názorem a názorem okolí (tj. buď názor vybraného souseda, nebo průměrný názor všech sousedů), a následně posune svůj názor o zlomek tohoto rozdílu směrem k názoru okolí. Velikost zlomku je daná parametrem \texttt{changing-opinion-strength} (sila změny názoru).
+V obou případech proběhne změna názoru stejným způsobem. Agent nejprve vypočte rozdíl mezi svým názorem a názorem okolí (tj. buď názor vybraného souseda, nebo průměrný názor všech sousedů), a následně posune svůj názor o zlomek tohoto rozdílu směrem k názoru okolí. Velikost zlomku je daná parametrem \texttt{changing-opinion-strength} (síla změny názoru).
 
 
 
@@ -102,7 +99,7 @@ Nejprve chceme ukázat vliv parametru \texttt{changing-opinion-strength} na mno�
 \label{fig:zmeny-nenormovany-normovany}
 \end{figure}
 
-Je zde ukázáno, že nejrychleji se názor ustálí při síle změny názoru $0.5$. Čím více se však síla změny názoru blíží k $0$ nebo $1$, tím déle trvá ustálení názoru. Nejvýraznější by byl případ parametru s hodnotou $1$, ale tato situace je velice specifická -- agenti neupravují svůj názor jen částečně, ale názor okolí (podle vybrané strategie) zcela přeberou -- a proto jej do analýzy mimo parametr \texttt{changing-opinion-strength} nezahrnujeme. Hodnota $1$ je zároveň jediná, u které je možné sledovat konvergenci názorů i k~hodnotě vzdálené od $0.5$.
+Je zde ukázáno, že nejrychleji se názor ustálí při síle změny názoru $0.5$. Čím více se však síla změny názoru blíží k $0$ nebo $1$, tím déle trvá ustálení názoru. Nejvýraznější by byl případ parametru s hodnotou $1$, ale tato situace je velice specifická -- agenti neupravují svůj názor jen částečně, ale názor okolí (podle vybrané strategie) zcela přeberou -- a proto ji do analýzy mimo parametr \texttt{changing-opinion-strength} nezahrnujeme. Hodnota $1$ je zároveň jediná, u které je možné sledovat konvergenci názorů i k~hodnotě vzdálené od $0.5$.
 
 V normovaném diagramu je množství změn výraznější pro extrémnější hodnoty síly změny názoru (tj. bližší k $0$ nebo $1$) a konvergence trvá déle. Pokud potom porovnáme hodnoty stejně vzdálené od $0.5$, výraznější změny jsou u hodnot menších než $0.5$. 
 
@@ -213,13 +210,21 @@ Pozorujeme podobné vlastnosti grafů jako v případě obrázku \ref{fig:zmeny-
 \end{figure*}
  
 \chapter{Závěr}
-K formovaniu názorov sme zvolili prístup postupného preberania názorov okolia každým agentom simultánne. Agenti sú usporiadaní v určitej typológii, kde vrcholmi sú ľudia a hranami väzby medzi nimi. Agenti môžu zistiť len názor svojich susedov, s ktorými sú prepojený hranou. 
+K formování názorů jsme zvolily přístup postupného přizpůsobování se okolí každým z agentů současně. Navrhly jsme model, ve kterém jsou agenti uspořádání v určité topologii a vzájemně interagují, pokud jsou spojeni vazbou. Uvažovaly jsme různé topologie sítí, strategie přebírání názorů i rychlost, s jakou agenti mění názor. I přes množství parametrů však simulace neukázaly výrazný rozdíl v chování modelu. Později jsme přidaly možnost různého počátečního rozdělení hodnot názorů.
 
-Celkovo sme vybrali 4 typy grafov - referenčný, náhodný, priestorový a tzv. malý svet. Preberanie názoru prebieha buď na základe jedného náhodného suseda alebo celého okolia, pričom miera prebratia názoru je taktiež parametrizovaná. Napriek rôznorodosti grafovej štruktúre a dvom typom stratégie preberania názorov, simulácie neukázali výrazný rozdiel v správaní modelu. Pridali sme ďalší parameter - počiatočné rozdelenie hodnôt názorov.
+Žádný z parametrů výrazně neovlivnil výsledný názor po ustálení změn. Největší dopad měly jednotlivé parametry na rychlost konvergence ke společné shodě. Proto jsme namísto hodnot názorů zkoumaly rychlost vývoje. Velký počet parametrů nám však znemožnil podrobnější analýzu méně výrazných jevů v krátkodobém horizontu.
 
-Žiaden z parametrov výrazne neovplyvnil výsledný názor po ustálení zmien. Najväčší dopad mali jednotlivé parametre na rýchlosť konvergencie k dohode. Preto sme namiesto hodnôt názorov skúmali rýchlosť vývoja. Veľký počet parametrov nám však znemožnil podrobnejšiu analýzu menej výrazných javov v krátkodobom horizonte.
+Projekt by se dal rozšířit dvěma způsoby. První možností je udělat podrobnější analýzu a zkoumat percentuální zastoupení jednotlivých intervalů hodnot v průběhu simulace, výslednou hodnotu názorů a další charakteristiky. Druhou možností je upravit model. Zajímavým obohacením by bylo přidání agentů, jejichž názor se v průběhu simulace nemění, ale pouze ovlivňuje okolí. Tito agenti by znemožnili všeobecnou shodu a model by se choval o poznání dynamičtěji. Dalším obohacením modelu může být pravděpodobnost změny názoru, což by zamezilo okamžité snaze přiblížit se názorem okolí. Tento parametr by však pouze ovlivnil rychlost konvergence. Oba zmíněné parametry jsou v modelu obsaženy, ale v analýze jsme s nimi nepracovaly.
 
-Projekt by sa dal rozšíriť dvoma spôsobmi, už spomínanou podrobnejšou analýzou (či už percentuálneho zastúpenia jednotlivých intervalov hodnôt počas vývoja, záverečnej hodnoty alebo inej charakteristiky) a samotným modelom. Pre zvýšenie realistickosti by bolo možné do modelu doplniť ľudí s nemenným názorom, ktorí by však ovplyvňovali okolie. Títo ľudia by znemožnili všeobecnú zhodu a model by sa správal podstatne dynamickejšie. Ďalším vylepšením môže byť pravdepodobnosť zmeny názoru, čo by zamedzilo okamžitej snahe priblížiť sa názorom okoliu agentom. V prípade tohto parametru by však možno išlo len o ďalšie ovplyvňovania rýchlosti konvergencie. Oba parametre sú obsiahnuté v momentálnom modele ale v analýze sme na ne nebrali ohľad.
+Vytvořily jsme model formování spojitého názoru. Přes větší množství parametrů se model chová velmi stejnorodě a konverguje k přibližně stejné hodnotě. Na druhou stranu nám tyto parametry ztížily analýzu. Nakonec jsme navrhly rozšíření, které by náš model mohly zajímavě obohatit a více přiblížit skutečnosti.
 
-Vytvorili sme model formovania spojitého názoru. Napriek väčšiemu množstvu parametrov sa model správa rovnorodo a konverguje k približne rovnakej hodnote. Tieto parametre nám na druhú stranu znáročnili analýzu. Nakoniec sme navrhli rozšírenia, ktoré by mohli model viac priblížiť skutočnosti a zároveň by ho mohli spraviť zaujímavejším.
+% K formovaniu názorov sme zvolili prístup postupného preberania názorov okolia každým agentom simultánne. Agenti sú usporiadaní v určitej typológii, kde vrcholmi sú ľudia a hranami väzby medzi nimi. Agenti môžu zistiť len názor svojich susedov, s ktorými sú prepojený hranou. 
+
+% Celkovo sme vybrali 4 typy grafov - referenčný, náhodný, priestorový a tzv. malý svet. Preberanie názoru prebieha buď na základe jedného náhodného suseda alebo celého okolia, pričom miera prebratia názoru je taktiež parametrizovaná. Napriek rôznorodosti grafovej štruktúre a dvom typom stratégie preberania názorov, simulácie neukázali výrazný rozdiel v správaní modelu. Pridali sme ďalší parameter - počiatočné rozdelenie hodnôt názorov.
+
+% Žiaden z parametrov výrazne neovplyvnil výsledný názor po ustálení zmien. Najväčší dopad mali jednotlivé parametre na rýchlosť konvergencie k dohode. Preto sme namiesto hodnôt názorov skúmali rýchlosť vývoja. Veľký počet parametrov nám však znemožnil podrobnejšiu analýzu menej výrazných javov v krátkodobom horizonte.
+
+% Projekt by sa dal rozšíriť dvoma spôsobmi, už spomínanou podrobnejšou analýzou (či už percentuálneho zastúpenia jednotlivých intervalov hodnôt počas vývoja, záverečnej hodnoty alebo inej charakteristiky) a samotným modelom. Pre zvýšenie realistickosti by bolo možné do modelu doplniť ľudí s nemenným názorom, ktorí by však ovplyvňovali okolie. Títo ľudia by znemožnili všeobecnú zhodu a model by sa správal podstatne dynamickejšie. Ďalším vylepšením môže byť pravdepodobnosť zmeny názoru, čo by zamedzilo okamžitej snahe priblížiť sa názorom okoliu agentom. V prípade tohto parametru by však možno išlo len o ďalšie ovplyvňovania rýchlosti konvergencie. Oba parametre sú obsiahnuté v momentálnom modele ale v analýze sme na ne nebrali ohľad.
+
+% Vytvorili sme model formovania spojitého názoru. Napriek väčšiemu množstvu parametrov sa model správa rovnorodo a konverguje k približne rovnakej hodnote. Tieto parametre nám na druhú stranu znáročnili analýzu. Nakoniec sme navrhli rozšírenia, ktoré by mohli model viac priblížiť skutočnosti a zároveň by ho mohli spraviť zaujímavejším.
 \end{document}
